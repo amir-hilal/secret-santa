@@ -1,8 +1,8 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PasswordProtect from '../components/PasswordProtect';
-import { createRoom, deleteRoom, subscribeToAllRooms } from '../firebase/roomsService';
-import { Room } from '../types';
+import PasswordProtect from '../../components/PasswordProtect';
+import { createRoom, deleteRoom, subscribeToAllRooms } from '../../firebase/roomsService';
+import { Room } from '../../types';
 import './HomePage.css';
 
 /**

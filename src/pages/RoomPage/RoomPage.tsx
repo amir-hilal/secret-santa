@@ -1,13 +1,13 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import LoadingAnimation from '../components/LoadingAnimation';
+import LoadingAnimation from '../../components/LoadingAnimation';
 import {
   assignSecretSanta,
   findParticipantIdByName,
   getTargetName,
-} from '../firebase/roomsService';
-import { useRoom } from '../hooks/useRoom';
-import { getLocalParticipant, setLocalParticipant } from '../utils/localStorage';
+} from '../../firebase/roomsService';
+import { useRoom } from '../../hooks/useRoom';
+import { getLocalParticipant, setLocalParticipant } from '../../utils/localStorage';
 import './RoomPage.css';
 
 /**
@@ -28,7 +28,7 @@ export default function RoomPage() {
 
   // Load Lottie animation
   useEffect(() => {
-    import('../lottie/ChristmasSleigh.json')
+    import('../../lottie/ChristmasSleigh.json')
       .then((data) => setAnimationData(data.default || data))
       .catch(() => setAnimationData(null));
   }, []);
