@@ -225,6 +225,11 @@ export default function RoomPage() {
               sx: {
                 borderRadius: 3,
                 padding: 1,
+                background: 'var(--card-background)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                border: '1px solid var(--border-color)',
+                boxShadow: 'var(--shadow)',
               },
             },
           }}
@@ -234,6 +239,7 @@ export default function RoomPage() {
             sx={{
               fontWeight: 'var(--font-weight-semibold)',
               fontSize: 'var(--font-size-xl)',
+              color: 'var(--text-primary)',
             }}
           >
             Confirm Identity
@@ -241,7 +247,7 @@ export default function RoomPage() {
           <DialogContent>
             <DialogContentText
               id="confirm-dialog-description"
-              sx={{ fontSize: 'var(--font-size-base)', color: 'text.primary' }}
+              sx={{ fontSize: 'var(--font-size-base)', color: 'var(--text-gray)' }}
             >
               Is that really you <strong>{confirmDialog.name}</strong>? Don't ruin it!
             </DialogContentText>
@@ -253,10 +259,10 @@ export default function RoomPage() {
               sx={{
                 textTransform: 'none',
                 fontWeight: 'var(--font-weight-semibold)',
-                borderColor: 'var(--text-gray-medium)',
-                color: 'var(--text-gray-dark)',
+                borderColor: 'var(--text-gray)',
+                color: 'var(--text-gray)',
                 '&:hover': {
-                  borderColor: 'var(--text-gray-dark)',
+                  borderColor: 'var(--text-primary)',
                   backgroundColor: 'var(--overlay-light)',
                 },
               }}

@@ -26,6 +26,7 @@
   --text-gray: #e0e0e0;
   --text-gray-dark: #666;
   --text-gray-medium: #999;
+  --text-dark: #333333;
 
   /* Border Colors */
   --border-color: rgba(255, 255, 255, 0.2);
