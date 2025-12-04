@@ -102,6 +102,8 @@
 .shuffle-animation {
   margin: 2rem 0;
   text-align: center;
+  min-height: 200px;
+  position: relative;
 }
 
 .shuffling-label {
@@ -110,27 +112,21 @@
   color: var(--primary-color);
 }
 
+.shuffled-names-container {
+  position: relative;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
 .shuffled-name {
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--primary-color);
-  min-height: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: shuffle-pulse 0.1s ease-in-out;
-}
-
-@keyframes shuffle-pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
+  position: absolute;
+  white-space: nowrap;
 }
 
 /* Participant list */

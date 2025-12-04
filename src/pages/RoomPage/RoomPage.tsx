@@ -6,6 +6,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import LoadingAnimation from '../../components/LoadingAnimation/LoadingAnimation';
@@ -114,7 +115,7 @@ export default function RoomPage() {
       const randomName =
         availableParticipants[Math.floor(Math.random() * availableParticipants.length)];
       setShuffledName(randomName);
-    }, 100); // Change name every 100ms
+    }, 300); // Change name every 800ms to match animation duration
 
     // After 5 seconds, make the actual assignment
     setTimeout(async () => {
@@ -219,10 +220,12 @@ export default function RoomPage() {
           onClose={cancelIdentity}
           aria-labelledby="confirm-dialog-title"
           aria-describedby="confirm-dialog-description"
-          PaperProps={{
-            sx: {
-              borderRadius: 3,
-              padding: 1,
+          slotProps={{
+            paper: {
+              sx: {
+                borderRadius: 3,
+                padding: 1,
+              },
             },
           }}
         >
@@ -244,7 +247,16 @@ export default function RoomPage() {
             <Button
               onClick={cancelIdentity}
               variant="outlined"
-              sx={{ textTransform: 'none', fontWeight: 600 }}
+              sx={{ 
+                textTransform: 'none', 
+                fontWeight: 600,
+                borderColor: '#999',
+                color: '#666',
+                '&:hover': {
+                  borderColor: '#666',
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                },
+              }}
             >
               no, sorry :(
             </Button>
@@ -321,12 +333,44 @@ export default function RoomPage() {
 
             {pickError && <div className="error-message">{pickError}</div>}
 
-            {shuffling && (
-              <div className="shuffle-animation">
-                <h3 className="shuffling-label">🎲 Shuffling...</h3>
-                <div className="shuffled-name">{shuffledName}</div>
-              </div>
-            )}
+            <AnimatePresence>
+              {shuffling && (
+                <motion.div
+                  className="shuffle-animation"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <h3 className="shuffling-label">🎲 Shuffling...</h3>
+                  <div className="shuffled-names-container">
+                    <motion.div
+                      key={shuffledName}
+                      className="shuffled-name"
+                      initial={{
+                        x: Math.random() * 800 - 400,
+                        y: Math.random() * 400 - 200,
+                        opacity: 0,
+                        scale: 0.3,
+                        rotate: Math.random() * 90 - 45,
+                      }}
+                      animate={{
+                        x: 0,
+                        y: 0,
+                        opacity: 1,
+                        scale: 1,
+                        rotate: 0,
+                      }}
+                      transition={{
+                        duration: 0.3,
+                        ease: 'easeOut',
+                      }}
+                    >
+                      {shuffledName}
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <Button
               onClick={handlePick}

@@ -26,23 +26,31 @@ export default function ParticipantTags({
 
   return (
     <div className="participants-tags">
-      {Object.values(participants).map((p) => {
-        const hasPicked = !!assignments[p.id];
-        const isClickable = selectable;
+      {Object.values(participants)
+        .sort((a, b) => {
+          const aHasPicked = !!assignments[a.id];
+          const bHasPicked = !!assignments[b.id];
+          // Unpicked (false) comes before picked (true)
+          if (aHasPicked === bHasPicked) return 0;
+          return aHasPicked ? 1 : -1;
+        })
+        .map((p) => {
+          const hasPicked = !!assignments[p.id];
+          const isClickable = selectable && !hasPicked;
 
-        return (
-          <span
-            key={p.id}
-            className={`participant-tag ${hasPicked ? 'picked' : ''} ${
-              isClickable ? 'selectable' : ''
-            }`}
-            onClick={() => handleClick(p.id, p.name)}
-            style={isClickable ? { cursor: 'pointer' } : undefined}
-          >
-            {p.name}
-          </span>
-        );
-      })}
+          return (
+            <span
+              key={p.id}
+              className={`participant-tag ${hasPicked ? 'picked' : ''} ${
+                isClickable ? 'selectable' : ''
+              }`}
+              onClick={() => handleClick(p.id, p.name)}
+              style={isClickable ? { cursor: 'pointer' } : undefined}
+            >
+              {p.name}
+            </span>
+          );
+        })}
     </div>
   );
 }
