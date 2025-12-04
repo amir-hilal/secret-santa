@@ -57,8 +57,10 @@
 }
 
 .room-item {
-  background: var(--background);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;

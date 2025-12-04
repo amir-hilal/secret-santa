@@ -20,17 +20,17 @@
   --success-color: #28a745;
 
   /* Backgrounds */
-  --background: #f8f9fa;
-  --card-background: #ffffff;
+  --background: #0a1628;
+  --card-background: rgba(255, 255, 255, 0.1);
 
   /* Text */
-  --text-primary: #212529;
-  --text-secondary: #6c757d;
+  --text-primary: #ffffff;
+  --text-secondary: #b8c5d6;
 
   /* Borders & Shadows */
-  --border-color: #dee2e6;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+  --border-color: rgba(255, 255, 255, 0.2);
+  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-hover: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
 }
 
 /* Base Styles */
@@ -40,9 +40,31 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--background);
+  background: linear-gradient(135deg, #0a1628 0%, #1a2942 100%);
   color: var(--text-primary);
   line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+.snow-background {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) scale(1.5);
+  height: 100dvh;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .material-symbols-outlined {
@@ -281,6 +303,10 @@ textarea {
   .card {
     padding: 1.5rem;
   }
+
+  .snow-background {
+    transform: translateX(-50%) scale(3.5);
+  }
 }
 
 @media (max-width: 480px) {
@@ -304,5 +330,9 @@ textarea {
   .btn-large {
     font-size: 1.1rem;
     padding: 0.85rem 1.5rem;
+  }
+
+  .snow-background {
+    transform: translateX(-50%) scale(4.1);
   }
 }

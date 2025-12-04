@@ -247,8 +247,8 @@ export default function RoomPage() {
             <Button
               onClick={cancelIdentity}
               variant="outlined"
-              sx={{ 
-                textTransform: 'none', 
+              sx={{
+                textTransform: 'none',
                 fontWeight: 600,
                 borderColor: '#999',
                 color: '#666',
@@ -290,7 +290,7 @@ export default function RoomPage() {
 
         <div className="room-info">
           <p>
-            <strong>Your name:</strong> {localParticipantName}
+            <strong>🎄 Hey, {localParticipantName}!</strong>
           </p>
         </div>
 
@@ -341,7 +341,6 @@ export default function RoomPage() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <h3 className="shuffling-label">🎲 Shuffling...</h3>
                   <div className="shuffled-names-container">
                     <motion.div
                       key={shuffledName}
@@ -396,11 +395,19 @@ export default function RoomPage() {
               {picking ? 'Picking...' : '🎲 Pick my Secret Santa'}
             </Button>
 
-            <div className="available-count">
-              {room.availableTargets
-                ? Object.values(room.availableTargets).filter(Boolean).length
-                : totalParticipants}{' '}
-              participants still available
+            <div className="participant-list">
+              <h3>✨ Your Secret Santa could be one of these...</h3>
+              <ParticipantTags
+                participants={Object.fromEntries(
+                  Object.entries(room.participants).filter(([id]) => {
+                    if (id === localParticipantId) return false; // Exclude yourself
+                    if (room.availableTargets && !room.availableTargets[id]) return false; // Exclude already picked
+                    return true;
+                  })
+                )}
+                assignments={{}}
+                selectable={false}
+              />
             </div>
           </div>
         )}
