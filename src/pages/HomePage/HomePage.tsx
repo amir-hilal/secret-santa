@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ParticipantTags from '../../components/ParticipantTags';
 import PasswordProtect from '../../components/PasswordProtect';
 import { createRoom, deleteRoom, subscribeToAllRooms } from '../../firebase/roomsService';
 import { Room } from '../../types';
@@ -291,13 +292,7 @@ export default function HomePage() {
                             </p>
                             <div className="room-participants">
                               <strong>Participants:</strong>
-                              <div className="participants-tags">
-                                {Object.values(room.participants).map((p) => (
-                                  <span key={p.id} className="participant-tag">
-                                    {p.name}
-                                  </span>
-                                ))}
-                              </div>
+                              <ParticipantTags participants={room.participants} />
                             </div>
                           </div>
 

@@ -1,7 +1,8 @@
-import { Button, Tooltip } from '@mui/material';
+import { Button } from '@mui/material';
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import LoadingAnimation from '../../components/LoadingAnimation';
+import ParticipantTags from '../../components/ParticipantTags';
 import {
   assignSecretSanta,
   findParticipantIdByName,
@@ -26,7 +27,6 @@ export default function RoomPage() {
   const [picking, setPicking] = useState(false);
   const [pickError, setPickError] = useState<string | null>(null);
   const [animationData, setAnimationData] = useState<object | null>(null);
-  const [linkCopied, setLinkCopied] = useState(false);
 
   // Load Lottie animation
   useEffect(() => {
@@ -106,14 +106,6 @@ export default function RoomPage() {
     }
   };
 
-  // Copy room link to clipboard
-  const handleCopyLink = () => {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url);
-    setLinkCopied(true);
-    setTimeout(() => setLinkCopied(false), 2000);
-  };
-
   // Loading state
   if (roomLoading) {
     return (
@@ -164,36 +156,6 @@ export default function RoomPage() {
         <div className="container">
           <h1>🎅 {room.name}</h1>
 
-          <div className="room-info">
-            <Tooltip
-              title="Copied!"
-              open={linkCopied}
-              disableFocusListener
-              disableHoverListener
-              disableTouchListener
-              arrow
-            >
-              <Button
-                onClick={handleCopyLink}
-                variant="contained"
-                sx={{
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  padding: '0.75rem 1.5rem',
-                  fontSize: '1rem',
-                  borderRadius: '8px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#218838',
-                  },
-                }}
-              >
-                Copy room link
-              </Button>
-            </Tooltip>
-          </div>
-
           <div className="card">
             <h2>Welcome!</h2>
             <p>Enter your name to join this Secret Santa game.</p>
@@ -233,11 +195,7 @@ export default function RoomPage() {
 
             <div className="participant-list">
               <h3>Participants in this room:</h3>
-              <ul>
-                {Object.values(room.participants).map((p) => (
-                  <li key={p.id}>{p.name}</li>
-                ))}
-              </ul>
+              <ParticipantTags participants={room.participants} />
             </div>
           </div>
         </div>
@@ -256,33 +214,6 @@ export default function RoomPage() {
           <p>
             <strong>Your name:</strong> {localParticipantName}
           </p>
-          <Tooltip
-            title="Copied!"
-            open={linkCopied}
-            disableFocusListener
-            disableHoverListener
-            disableTouchListener
-            arrow
-          >
-            <Button
-              onClick={handleCopyLink}
-              variant="contained"
-              sx={{
-                textTransform: 'none',
-                fontWeight: 600,
-                padding: '0.75rem 1.5rem',
-                fontSize: '1rem',
-                borderRadius: '8px',
-                backgroundColor: '#28a745',
-                color: 'white',
-                '&:hover': {
-                  backgroundColor: '#218838',
-                },
-              }}
-            >
-              Copy room link
-            </Button>
-          </Tooltip>
         </div>
 
         <div className="stats">
