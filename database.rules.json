@@ -1,0 +1,37 @@
+{
+  "rules": {
+    "rooms": {
+      "$roomId": {
+        ".read": true,
+        ".write": "!data.exists()",
+        "participants": {
+          ".read": true,
+          ".write": false
+        },
+        "assignments": {
+          ".read": true,
+          "$participantId": {
+            ".write": true,
+            ".validate": "newData.hasChildren(['participantId', 'targetId', 'assignedAt'])"
+          }
+        },
+        "availableTargets": {
+          ".read": true,
+          "$targetId": {
+            ".write": true,
+            ".validate": "newData.isBoolean()"
+          }
+        },
+        "status": {
+          ".read": true,
+          ".write": true,
+          ".validate": "newData.val() === 'open' || newData.val() === 'completed'"
+        },
+        "createdAt": {
+          ".read": true,
+          ".write": "!data.exists()"
+        }
+      }
+    }
+  }
+}
