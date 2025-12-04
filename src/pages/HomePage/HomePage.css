@@ -101,7 +101,7 @@
 .room-id {
   font-weight: 600;
   color: var(--text-primary);
-  font-size: 0.9rem;
+  font-size: 1.25rem;
   font-family: 'Courier New', monospace;
 }
 
@@ -122,13 +122,13 @@
 }
 
 .room-date {
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
 .room-progress {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--text-primary);
   margin-bottom: 0.75rem;
 }
@@ -139,7 +139,7 @@
 
 .room-participants strong {
   display: block;
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin-bottom: 0.5rem;
   color: var(--text-primary);
 }

@@ -289,7 +289,7 @@ textarea {
 /* Responsive Design */
 @media (max-width: 768px) {
   .page {
-    padding: 1rem 0.5rem;
+    padding: 0.9rem 0.5rem;
   }
 
   h1 {

@@ -362,10 +362,12 @@ export default function HomePage() {
         onClose={() => setDeleteDialog({ open: false, roomId: '', roomName: '' })}
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-description"
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            padding: 1,
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: 3,
+              padding: 1,
+            },
           },
         }}
       >
