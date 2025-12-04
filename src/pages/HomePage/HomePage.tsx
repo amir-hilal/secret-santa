@@ -1,3 +1,14 @@
+import {
+  Alert,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Snackbar,
+  Tooltip,
+} from '@mui/material';
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PasswordProtect from '../../components/PasswordProtect';
@@ -15,6 +26,17 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: 'success' | 'error';
+  }>({ open: false, message: '', severity: 'success' });
+  const [copiedRoomId, setCopiedRoomId] = useState<string | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    roomId: string;
+    roomName: string;
+  }>({ open: false, roomId: '', roomName: '' });
   const navigate = useNavigate();
 
   // Subscribe to all rooms
@@ -70,21 +92,32 @@ export default function HomePage() {
   const handleCopyRoomLink = (roomId: string) => {
     const url = `${window.location.origin}/room/${roomId}`;
     navigator.clipboard.writeText(url);
-    alert('Room link copied to clipboard!');
+    setCopiedRoomId(roomId);
+    setTimeout(() => setCopiedRoomId(null), 2000);
   };
 
-  const handleDeleteRoom = async (roomId: string, roomName: string) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete the room "${roomName}"? This action cannot be undone.`
-    );
+  const handleDeleteRoom = (roomId: string, roomName: string) => {
+    setDeleteDialog({ open: true, roomId, roomName });
+  };
 
-    if (!confirmed) return;
+  const confirmDelete = async () => {
+    const { roomId, roomName } = deleteDialog;
+    setDeleteDialog({ open: false, roomId: '', roomName: '' });
 
     try {
       await deleteRoom(roomId);
+      setSnackbar({
+        open: true,
+        message: `Room "${roomName}" deleted successfully`,
+        severity: 'success',
+      });
     } catch (err) {
       console.error('Error deleting room:', err);
-      alert('Failed to delete room. Please try again.');
+      setSnackbar({
+        open: true,
+        message: 'Failed to delete room. Please try again.',
+        severity: 'error',
+      });
     }
   };
 
@@ -131,9 +164,30 @@ export default function HomePage() {
 
                   {error && <div className="error-message">{error}</div>}
 
-                  <button type="submit" disabled={loading} className="btn btn-primary">
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    variant="contained"
+                    sx={{
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      mt: 1,
+                      fontSize: '1rem',
+                      padding: '0.75rem 1.5rem',
+                      borderRadius: '8px',
+                      backgroundColor: '#28a745',
+                      color: 'white',
+                      '&:hover': {
+                        backgroundColor: '#218838',
+                      },
+                      '&:disabled': {
+                        backgroundColor: '#28a745',
+                        opacity: 0.6,
+                      },
+                    }}
+                  >
                     {loading ? 'Creating room...' : 'Create room'}
-                  </button>
+                  </Button>
                 </form>
 
                 <div className="info-box">
@@ -162,12 +216,72 @@ export default function HomePage() {
                         : 0;
 
                       return (
-                        <div key={room.id} className="room-item">
+                        <div
+                          key={room.id}
+                          className="room-item"
+                          onClick={() => navigate(`/room/${room.id}`)}
+                        >
                           <div className="room-header">
-                            <span className="room-id">{room.name}</span>
-                            <span className={`room-status ${room.status}`}>
-                              {room.status === 'completed' ? '✅' : '🔄'}
-                            </span>
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.75rem',
+                              }}
+                            >
+                              <span className="room-id">{room.name}</span>
+                              <Tooltip
+                                title="Copied!"
+                                open={copiedRoomId === room.id}
+                                disableFocusListener
+                                disableHoverListener
+                                disableTouchListener
+                                arrow
+                              >
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCopyRoomLink(room.id);
+                                  }}
+                                  title="Copy link"
+                                  sx={{
+                                    borderRadius: '50%',
+                                    minWidth: 'auto',
+                                    width: '32px',
+                                    height: '32px',
+                                    padding: '0.4rem',
+                                    background: 'none',
+                                    color: 'var(--text-secondary)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    '&:hover': {
+                                      background: 'rgba(0, 0, 0, 0.04)',
+                                      color: 'var(--text-primary)',
+                                    },
+                                  }}
+                                >
+                                  <span
+                                    className="material-symbols-outlined"
+                                    style={{ fontSize: '20px' }}
+                                  >
+                                    link
+                                  </span>
+                                </Button>
+                              </Tooltip>
+                            </div>
+                            <div className="room-header-actions">
+                              <span
+                                className="material-symbols-outlined room-icon"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/room/${room.id}`);
+                                }}
+                                title="Open room"
+                              >
+                                open_in_new
+                              </span>
+                            </div>
                           </div>
 
                           <div className="room-details">
@@ -188,24 +302,36 @@ export default function HomePage() {
                           </div>
 
                           <div className="room-actions">
-                            <button
-                              onClick={() => navigate(`/room/${room.id}`)}
-                              className="btn btn-small"
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteRoom(room.id, room.name);
+                              }}
+                              title="Delete room"
+                              sx={{
+                                borderRadius: '50%',
+                                minWidth: 'auto',
+                                width: '40px',
+                                height: '40px',
+                                padding: '0.5rem',
+                                border: 'none',
+                                backgroundColor: '#dc3545',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                '&:hover': {
+                                  backgroundColor: '#c82333',
+                                },
+                              }}
                             >
-                              Open
-                            </button>
-                            <button
-                              onClick={() => handleCopyRoomLink(room.id)}
-                              className="btn btn-small btn-secondary"
-                            >
-                              Copy Link
-                            </button>
-                            <button
-                              onClick={() => handleDeleteRoom(room.id, room.name)}
-                              className="btn btn-small btn-danger"
-                            >
-                              Delete
-                            </button>
+                              <span
+                                className="material-symbols-outlined"
+                                style={{ fontSize: '24px' }}
+                              >
+                                delete
+                              </span>
+                            </Button>
                           </div>
                         </div>
                       );
@@ -217,6 +343,69 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+
+      <Dialog
+        open={deleteDialog.open}
+        onClose={() => setDeleteDialog({ open: false, roomId: '', roomName: '' })}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            padding: 1,
+          },
+        }}
+      >
+        <DialogTitle
+          id="delete-dialog-title"
+          sx={{ fontWeight: 600, fontSize: '1.5rem' }}
+        >
+          Delete Room?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="delete-dialog-description"
+            sx={{ fontSize: '1rem', color: 'text.primary' }}
+          >
+            Are you sure you want to delete the room{' '}
+            <strong>"{deleteDialog.roomName}"</strong>? This action cannot be undone and
+            all participant data will be lost.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ padding: 2, gap: 1 }}>
+          <Button
+            onClick={() => setDeleteDialog({ open: false, roomId: '', roomName: '' })}
+            variant="outlined"
+            sx={{ textTransform: 'none', fontWeight: 600 }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={confirmDelete}
+            variant="contained"
+            color="error"
+            sx={{ textTransform: 'none', fontWeight: 600 }}
+            autoFocus
+          >
+            Delete Room
+          </Button>
+        </DialogActions>
+      </Dialog>
     </PasswordProtect>
   );
 }

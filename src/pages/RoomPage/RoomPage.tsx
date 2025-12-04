@@ -1,3 +1,4 @@
+import { Button, Tooltip } from '@mui/material';
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import LoadingAnimation from '../../components/LoadingAnimation';
@@ -25,6 +26,7 @@ export default function RoomPage() {
   const [picking, setPicking] = useState(false);
   const [pickError, setPickError] = useState<string | null>(null);
   const [animationData, setAnimationData] = useState<object | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   // Load Lottie animation
   useEffect(() => {
@@ -108,7 +110,8 @@ export default function RoomPage() {
   const handleCopyLink = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url);
-    alert('Room link copied to clipboard!');
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
   };
 
   // Loading state
@@ -130,9 +133,20 @@ export default function RoomPage() {
       <div className="page room-page">
         <div className="container">
           <div className="error-message">{roomError || 'Room not found'}</div>
-          <button onClick={() => navigate('/')} className="btn">
+          <Button
+            onClick={() => navigate('/')}
+            variant="contained"
+            sx={{
+              textTransform: 'none',
+              fontWeight: 600,
+              mt: 2,
+              padding: '0.75rem 1.5rem',
+              fontSize: '1rem',
+              borderRadius: '8px',
+            }}
+          >
             Go to Home
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -151,9 +165,33 @@ export default function RoomPage() {
           <h1>🎅 {room.name}</h1>
 
           <div className="room-info">
-            <button onClick={handleCopyLink} className="btn btn-secondary">
-              Copy room link
-            </button>
+            <Tooltip
+              title="Copied!"
+              open={linkCopied}
+              disableFocusListener
+              disableHoverListener
+              disableTouchListener
+              arrow
+            >
+              <Button
+                onClick={handleCopyLink}
+                variant="contained"
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  padding: '0.75rem 1.5rem',
+                  fontSize: '1rem',
+                  borderRadius: '8px',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: '#218838',
+                  },
+                }}
+              >
+                Copy room link
+              </Button>
+            </Tooltip>
           </div>
 
           <div className="card">
@@ -173,9 +211,24 @@ export default function RoomPage() {
 
               {nameError && <div className="error-message">{nameError}</div>}
 
-              <button type="submit" className="btn btn-primary">
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '8px',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: '#218838',
+                  },
+                }}
+              >
                 Join room
-              </button>
+              </Button>
             </form>
 
             <div className="participant-list">
@@ -190,9 +243,7 @@ export default function RoomPage() {
         </div>
       </div>
     );
-  }
-
-  // User has identified themselves
+  } // User has identified themselves
   const hasAssignment = room.assignments && room.assignments[localParticipantId];
   const targetName = hasAssignment ? getTargetName(room, localParticipantId) : null;
 
@@ -205,9 +256,33 @@ export default function RoomPage() {
           <p>
             <strong>Your name:</strong> {localParticipantName}
           </p>
-          <button onClick={handleCopyLink} className="btn btn-secondary">
-            Copy room link
-          </button>
+          <Tooltip
+            title="Copied!"
+            open={linkCopied}
+            disableFocusListener
+            disableHoverListener
+            disableTouchListener
+            arrow
+          >
+            <Button
+              onClick={handleCopyLink}
+              variant="contained"
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                padding: '0.75rem 1.5rem',
+                fontSize: '1rem',
+                borderRadius: '8px',
+                backgroundColor: '#28a745',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: '#218838',
+                },
+              }}
+            >
+              Copy room link
+            </Button>
+          </Tooltip>
         </div>
 
         <div className="stats">
@@ -250,13 +325,29 @@ export default function RoomPage() {
 
               {pickError && <div className="error-message">{pickError}</div>}
 
-              <button
+              <Button
                 onClick={handlePick}
                 disabled={picking}
-                className="btn btn-primary btn-large"
+                variant="contained"
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  fontSize: '1.25rem',
+                  padding: '1rem 2rem',
+                  borderRadius: '8px',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  '&:hover:not(:disabled)': {
+                    backgroundColor: '#218838',
+                  },
+                  '&:disabled': {
+                    backgroundColor: '#28a745',
+                    opacity: 0.6,
+                  },
+                }}
               >
                 {picking ? 'Picking...' : '🎲 Pick my Secret Santa'}
-              </button>
+              </Button>
 
               <div className="available-count">
                 {room.availableTargets
