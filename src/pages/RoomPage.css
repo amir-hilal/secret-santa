@@ -1,0 +1,154 @@
+/* Room Page Styles */
+
+/* Room info */
+.room-info {
+  background: var(--card-background);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.room-info p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.room-info strong {
+  color: var(--primary-color);
+}
+
+/* Stats */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.stat-item {
+  background: var(--card-background);
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* Result card */
+.result-card {
+  background: linear-gradient(135deg, var(--primary-color), #c82333) !important;
+  color: white;
+  text-align: center;
+}
+
+.result-card h2 {
+  color: white !important;
+}
+
+.result-card .info-text {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.target-name {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  animation: fadeInScale 0.5s ease;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Pick card */
+.pick-card {
+  text-align: center;
+}
+
+.available-count {
+  margin-top: 1rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Participant list */
+.participant-list {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border-color);
+}
+
+.participant-list ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.participant-list li {
+  background: var(--background);
+  padding: 0.75rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 2px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.participant-list li:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .target-name {
+    font-size: 2rem;
+  }
+
+  .participant-list ul {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .target-name {
+    font-size: 1.75rem;
+  }
+
+  .participant-list ul {
+    grid-template-columns: 1fr;
+  }
+}

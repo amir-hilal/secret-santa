@@ -20,8 +20,9 @@ export interface Assignment {
  */
 export interface Room {
   id: string;
+  name: string;
   createdAt: number;
-  status: "open" | "completed";
+  status: 'open' | 'completed';
   participants: Record<string, Participant>;
   assignments?: Record<string, Assignment>;
   availableTargets?: Record<string, boolean>;

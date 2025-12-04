@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react';
+import './PasswordProtect.css';
 
 interface PasswordProtectProps {
   children: React.ReactNode;

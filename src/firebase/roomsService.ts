@@ -5,10 +5,14 @@ import { db } from './firebase';
 /**
  * Create a new Secret Santa room with the given participant names
  *
+ * @param roomName - The name of the room
  * @param participantNames - Array of participant names
  * @returns The newly created room ID
  */
-export async function createRoom(participantNames: string[]): Promise<string> {
+export async function createRoom(
+  roomName: string,
+  participantNames: string[]
+): Promise<string> {
   // Create a new room reference with auto-generated ID
   const roomsRef = ref(db, 'rooms');
   const newRoomRef = push(roomsRef);
@@ -29,6 +33,7 @@ export async function createRoom(participantNames: string[]): Promise<string> {
 
   // Create the room object
   const room: Omit<Room, 'id'> = {
+    name: roomName.trim(),
     createdAt: Date.now(),
     status: 'open',
     participants,
@@ -235,4 +240,14 @@ export function subscribeToAllRooms(callback: (rooms: Room[]) => void): () => vo
   });
 
   return unsubscribe;
+}
+
+/**
+ * Delete a room by ID
+ *
+ * @param roomId - The room ID to delete
+ */
+export async function deleteRoom(roomId: string): Promise<void> {
+  const roomRef = ref(db, `rooms/${roomId}`);
+  await set(roomRef, null);
 }

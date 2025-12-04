@@ -1,15 +1,14 @@
-import { useState, useEffect, FormEvent } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useRoom } from '../hooks/useRoom';
+import { FormEvent, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import LoadingAnimation from '../components/LoadingAnimation';
 import {
   assignSecretSanta,
   findParticipantIdByName,
-  getTargetName
+  getTargetName,
 } from '../firebase/roomsService';
-import {
-  getLocalParticipant,
-  setLocalParticipant
-} from '../utils/localStorage';
+import { useRoom } from '../hooks/useRoom';
+import { getLocalParticipant, setLocalParticipant } from '../utils/localStorage';
+import './RoomPage.css';
 
 /**
  * RoomPage - Participants join and pick their Secret Santa
@@ -25,6 +24,14 @@ export default function RoomPage() {
   const [nameError, setNameError] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
   const [pickError, setPickError] = useState<string | null>(null);
+  const [animationData, setAnimationData] = useState<object | null>(null);
+
+  // Load Lottie animation
+  useEffect(() => {
+    import('../lottie/ChristmasSleigh.json')
+      .then((data) => setAnimationData(data.default || data))
+      .catch(() => setAnimationData(null));
+  }, []);
 
   // Load participant from localStorage on mount
   useEffect(() => {
@@ -88,7 +95,9 @@ export default function RoomPage() {
     } catch (err) {
       console.error('Error picking Secret Santa:', err);
       setPickError(
-        err instanceof Error ? err.message : 'Failed to pick Secret Santa. Please try again.'
+        err instanceof Error
+          ? err.message
+          : 'Failed to pick Secret Santa. Please try again.'
       );
     } finally {
       setPicking(false);
@@ -105,10 +114,12 @@ export default function RoomPage() {
   // Loading state
   if (roomLoading) {
     return (
-      <div className="page room-page">
-        <div className="container">
-          <div className="loading">Loading room...</div>
-        </div>
+      <div className="page room-page loading-page">
+        <LoadingAnimation
+          animationData={animationData || undefined}
+          width={300}
+          height={300}
+        />
       </div>
     );
   }
@@ -118,9 +129,7 @@ export default function RoomPage() {
     return (
       <div className="page room-page">
         <div className="container">
-          <div className="error-message">
-            {roomError || 'Room not found'}
-          </div>
+          <div className="error-message">{roomError || 'Room not found'}</div>
           <button onClick={() => navigate('/')} className="btn">
             Go to Home
           </button>
@@ -139,10 +148,9 @@ export default function RoomPage() {
     return (
       <div className="page room-page">
         <div className="container">
-          <h1>🎅 Secret Santa Room</h1>
+          <h1>🎅 {room.name}</h1>
 
           <div className="room-info">
-            <p><strong>Room ID:</strong> {roomId}</p>
             <button onClick={handleCopyLink} className="btn btn-secondary">
               Copy room link
             </button>
@@ -191,11 +199,12 @@ export default function RoomPage() {
   return (
     <div className="page room-page">
       <div className="container">
-        <h1>🎅 Secret Santa Room</h1>
+        <h1>🎅 {room.name}</h1>
 
         <div className="room-info">
-          <p><strong>Room ID:</strong> {roomId}</p>
-          <p><strong>Your name:</strong> {localParticipantName}</p>
+          <p>
+            <strong>Your name:</strong> {localParticipantName}
+          </p>
           <button onClick={handleCopyLink} className="btn btn-secondary">
             Copy room link
           </button>
@@ -208,11 +217,15 @@ export default function RoomPage() {
           </div>
           <div className="stat-item">
             <span className="stat-label">Assignments made:</span>
-            <span className="stat-value">{assignedCount} / {totalParticipants}</span>
+            <span className="stat-value">
+              {assignedCount} / {totalParticipants}
+            </span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Status:</span>
-            <span className="stat-value">{isCompleted ? '✅ Completed' : '🔄 In progress'}</span>
+            <span className="stat-value">
+              {isCompleted ? '✅ Completed' : '🔄 In progress'}
+            </span>
           </div>
         </div>
 
@@ -248,7 +261,8 @@ export default function RoomPage() {
               <div className="available-count">
                 {room.availableTargets
                   ? Object.values(room.availableTargets).filter(Boolean).length
-                  : totalParticipants} participants still available
+                  : totalParticipants}{' '}
+                participants still available
               </div>
             </div>
 

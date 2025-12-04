@@ -1,0 +1,17 @@
+/* Loading Animation Styles */
+.loading-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100dvh;
+  min-height: 100dvh;
+  padding: 0;
+  width: 100%;
+}
+
+.loading-text {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin: 0;
+}

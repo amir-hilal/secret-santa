@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import './NotFoundPage.css';
 
 /**
  * NotFoundPage - 404 page for invalid routes

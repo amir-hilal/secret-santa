@@ -12,10 +12,11 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "firebase": "^12.6.0",
+    "lottie-react": "^2.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.2.1",
-    "react-router-dom": "^7.10.0",
-    "firebase": "^12.6.0"
+    "react-router-dom": "^7.10.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

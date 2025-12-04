@@ -1,14 +1,16 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PasswordProtect from '../components/PasswordProtect';
-import { createRoom, subscribeToAllRooms } from '../firebase/roomsService';
+import { createRoom, deleteRoom, subscribeToAllRooms } from '../firebase/roomsService';
 import { Room } from '../types';
+import './HomePage.css';
 
 /**
  * HomePage - Admin page to create rooms and view all existing rooms
  * Protected by password authentication
  */
 export default function HomePage() {
+  const [roomName, setRoomName] = useState('');
   const [participantNames, setParticipantNames] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +29,13 @@ export default function HomePage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    // Validate room name
+    const trimmedRoomName = roomName.trim();
+    if (trimmedRoomName.length === 0) {
+      setError('Please enter a room name');
+      return;
+    }
 
     // Parse and validate participant names
     const names = participantNames
@@ -49,7 +58,7 @@ export default function HomePage() {
     setLoading(true);
 
     try {
-      const roomId = await createRoom(names);
+      const roomId = await createRoom(trimmedRoomName, names);
       navigate(`/room/${roomId}`);
     } catch (err) {
       console.error('Error creating room:', err);
@@ -62,6 +71,21 @@ export default function HomePage() {
     const url = `${window.location.origin}/room/${roomId}`;
     navigator.clipboard.writeText(url);
     alert('Room link copied to clipboard!');
+  };
+
+  const handleDeleteRoom = async (roomId: string, roomName: string) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete the room "${roomName}"? This action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteRoom(roomId);
+    } catch (err) {
+      console.error('Error deleting room:', err);
+      alert('Failed to delete room. Please try again.');
+    }
   };
 
   const formatDate = (timestamp: number) => {
@@ -81,6 +105,17 @@ export default function HomePage() {
               <div className="card">
                 <h2>Create New Room</h2>
                 <form onSubmit={handleSubmit} className="create-room-form">
+                  <label htmlFor="roomName">Room Name:</label>
+                  <input
+                    type="text"
+                    id="roomName"
+                    value={roomName}
+                    onChange={(e) => setRoomName(e.target.value)}
+                    placeholder="e.g., Office Party 2025"
+                    disabled={loading}
+                    required
+                  />
+
                   <label htmlFor="participants">
                     Enter participant names (one per line):
                   </label>
@@ -129,7 +164,7 @@ export default function HomePage() {
                       return (
                         <div key={room.id} className="room-item">
                           <div className="room-header">
-                            <span className="room-id">Room: {room.id}</span>
+                            <span className="room-id">{room.name}</span>
                             <span className={`room-status ${room.status}`}>
                               {room.status === 'completed' ? '✅' : '🔄'}
                             </span>
@@ -164,6 +199,12 @@ export default function HomePage() {
                               className="btn btn-small btn-secondary"
                             >
                               Copy Link
+                            </button>
+                            <button
+                              onClick={() => handleDeleteRoom(room.id, room.name)}
+                              className="btn btn-small btn-danger"
+                            >
+                              Delete
                             </button>
                           </div>
                         </div>
