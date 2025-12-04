@@ -25,7 +25,7 @@ function App() {
           <Lottie
             animationData={snowAnimation}
             loop={true}
-            style={{ width: 'auto', height: '100vh', minWidth: '100vw' }}
+            style={{ width: 'auto', height: '100dvh', minWidth: '100vw' }}
           />
         </div>
       )}
