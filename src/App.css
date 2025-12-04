@@ -1,5 +1,9 @@
 /* Global Styles - Shared across all pages and components */
 
+/* Import color variables */
+@import './styles/colors.css';
+@import './styles/typography.css';
+
 /* Reset */
 *,
 *::before,
@@ -9,30 +13,6 @@
   box-sizing: border-box;
 }
 
-/* CSS Variables */
-:root {
-  /* Colors */
-  --primary-color: #28a745;
-  --primary-hover: #218838;
-  --secondary-color: #dc3545;
-  --secondary-hover: #c82333;
-  --error-color: #dc3545;
-  --success-color: #28a745;
-
-  /* Backgrounds */
-  --background: #0a1628;
-  --card-background: rgba(255, 255, 255, 0.1);
-
-  /* Text */
-  --text-primary: #ffffff;
-  --text-secondary: #b8c5d6;
-
-  /* Borders & Shadows */
-  --border-color: rgba(255, 255, 255, 0.2);
-  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  --shadow-hover: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-}
-
 /* Base Styles */
 body {
   font-family:
@@ -40,7 +20,7 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #0a1628 0%, #1a2942 100%);
+  background: var(--gradient-background);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
@@ -103,20 +83,20 @@ body {
 
 /* Typography */
 h1 {
-  font-size: 2.5rem;
+  font-size: var(--font-size-4xl);
   margin-bottom: 0.5rem;
   color: var(--primary-color);
   text-align: center;
 }
 
 h2 {
-  font-size: 1.75rem;
+  font-size: var(--font-size-2xl);
   margin-bottom: 1rem;
   color: var(--text-primary);
 }
 
 h3 {
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg);
   margin-bottom: 0.75rem;
   color: var(--text-primary);
 }
@@ -124,7 +104,7 @@ h3 {
 .subtitle {
   text-align: center;
   color: var(--text-secondary);
-  font-size: 1.1rem;
+  font-size: var(--font-size-md);
   margin-bottom: 2rem;
 }
 
@@ -160,7 +140,7 @@ textarea {
   padding: 0.75rem;
   border: 2px solid var(--border-color);
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   font-family: inherit;
   transition: border-color 0.2s ease;
 }
@@ -181,8 +161,8 @@ textarea {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
@@ -223,24 +203,24 @@ textarea {
 }
 
 .btn-danger:hover:not(:disabled) {
-  background-color: #bd2130;
+  background-color: var(--error-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow);
 }
 
 .btn-large {
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg);
   padding: 1rem 2rem;
 }
 
 .btn-small {
   padding: 0.4rem 0.8rem;
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
 }
 
 /* Messages */
 .error-message {
-  background-color: #f8d7da;
+  background-color: var(--error-background);
   color: var(--error-color);
   padding: 0.75rem 1rem;
   border-radius: 8px;
@@ -256,7 +236,7 @@ textarea {
 
 .loading {
   text-align: center;
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg);
   color: var(--text-secondary);
   padding: 2rem;
 }
@@ -293,11 +273,11 @@ textarea {
   }
 
   h1 {
-    font-size: 2rem;
+    font-size: var(--font-size-3xl);
   }
 
   h2 {
-    font-size: 1.5rem;
+    font-size: var(--font-size-xl);
   }
 
   .card {
@@ -311,11 +291,11 @@ textarea {
 
 @media (max-width: 480px) {
   h1 {
-    font-size: 1.75rem;
+    font-size: var(--font-size-2xl);
   }
 
   .subtitle {
-    font-size: 1rem;
+    font-size: var(--font-size-base);
   }
 
   .card {
@@ -324,11 +304,11 @@ textarea {
 
   .btn {
     padding: 0.6rem 1.25rem;
-    font-size: 0.95rem;
+    font-size: var(--font-size-sm);
   }
 
   .btn-large {
-    font-size: 1.1rem;
+    font-size: var(--font-size-md);
     padding: 0.85rem 1.5rem;
   }
 

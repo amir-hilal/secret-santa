@@ -1,0 +1,60 @@
+/* Color Variables */
+:root {
+  /* Primary Colors */
+  --primary-color: #28a745;
+  --primary-hover: #218838;
+
+  /* Secondary Colors */
+  --secondary-color: #dc3545;
+  --secondary-hover: #c82333;
+
+  /* Status Colors */
+  --error-color: #dc3545;
+  --error-hover: #bd2130;
+  --success-color: #28a745;
+
+  /* Background Colors */
+  --background: #0a1628;
+  --background-secondary: #1a2942;
+  --card-background: rgba(255, 255, 255, 0.1);
+  --card-background-light: rgba(255, 255, 255, 0.15);
+  --card-background-lighter: rgba(255, 255, 255, 0.25);
+
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #b8c5d6;
+  --text-gray: #e0e0e0;
+  --text-gray-dark: #666;
+  --text-gray-medium: #999;
+
+  /* Border Colors */
+  --border-color: rgba(255, 255, 255, 0.2);
+  --border-gray: rgba(153, 153, 153, 0.5);
+  --border-white: rgba(255, 255, 255, 0.3);
+
+  /* Shadow Colors */
+  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-hover: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  /* Overlay Colors */
+  --overlay-dark: rgba(0, 0, 0, 0.85);
+  --overlay-light: rgba(0, 0, 0, 0.04);
+
+  /* Error Message Background */
+  --error-background: #f8d7da;
+
+  /* Gradient Colors */
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  --gradient-background: linear-gradient(
+    135deg,
+    var(--background) 0%,
+    var(--background-secondary) 100%
+  );
+  --gradient-fade: linear-gradient(to right, transparent, rgba(10, 22, 40, 0.95) 20px);
+  --gradient-mask: linear-gradient(to right, black calc(100% - 60px), transparent 100%);
+}

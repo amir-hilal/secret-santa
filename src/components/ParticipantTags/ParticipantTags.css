@@ -6,28 +6,28 @@
 }
 
 .participant-tag {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--card-background-light);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  border: 2px solid rgba(153, 153, 153, 0.5);
+  border: 2px solid var(--border-gray);
   border-radius: 4px;
   padding: 0.5rem 1rem;
-  font-size: 1rem;
-  color: #e0e0e0;
+  font-size: var(--font-size-base);
+  color: var(--text-gray);
   transition: all 0.2s ease;
 }
 
 .participant-tag.picked {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--card-background-lighter);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  color: #b8c5d6;
-  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--text-secondary);
+  border-color: var(--border-white);
   border-width: 1px;
 }
 
 .participant-tag.selectable:hover {
   border-color: var(--primary-color);
   transform: scale(1.05);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-small);
 }

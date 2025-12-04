@@ -171,18 +171,18 @@ export default function HomePage() {
                     variant="contained"
                     sx={{
                       textTransform: 'none',
-                      fontWeight: 600,
+                      fontWeight: 'var(--font-weight-semibold)',
                       mt: 1,
-                      fontSize: '1rem',
+                      fontSize: 'var(--font-size-base)',
                       padding: '0.75rem 1.5rem',
                       borderRadius: '8px',
-                      backgroundColor: '#28a745',
+                      backgroundColor: 'var(--primary-color)',
                       color: 'white',
                       '&:hover': {
-                        backgroundColor: '#218838',
+                        backgroundColor: 'var(--primary-hover)',
                       },
                       '&:disabled': {
-                        backgroundColor: '#28a745',
+                        backgroundColor: 'var(--primary-color)',
                         opacity: 0.6,
                       },
                     }}
@@ -257,7 +257,7 @@ export default function HomePage() {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     '&:hover': {
-                                      background: 'rgba(0, 0, 0, 0.04)',
+                                      background: 'var(--overlay-light)',
                                       color: 'var(--text-primary)',
                                     },
                                   }}
@@ -313,13 +313,13 @@ export default function HomePage() {
                                 height: '40px',
                                 padding: '0.5rem',
                                 border: 'none',
-                                backgroundColor: '#dc3545',
+                                backgroundColor: 'var(--error-color)',
                                 color: 'white',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 '&:hover': {
-                                  backgroundColor: '#c82333',
+                                  backgroundColor: 'var(--secondary-hover)',
                                 },
                               }}
                             >
@@ -373,14 +373,17 @@ export default function HomePage() {
       >
         <DialogTitle
           id="delete-dialog-title"
-          sx={{ fontWeight: 600, fontSize: '1.5rem' }}
+          sx={{
+            fontWeight: 'var(--font-weight-semibold)',
+            fontSize: 'var(--font-size-xl)',
+          }}
         >
           Delete Room?
         </DialogTitle>
         <DialogContent>
           <DialogContentText
             id="delete-dialog-description"
-            sx={{ fontSize: '1rem', color: 'text.primary' }}
+            sx={{ fontSize: 'var(--font-size-base)', color: 'text.primary' }}
           >
             Are you sure you want to delete the room{' '}
             <strong>"{deleteDialog.roomName}"</strong>? This action cannot be undone and
@@ -391,7 +394,7 @@ export default function HomePage() {
           <Button
             onClick={() => setDeleteDialog({ open: false, roomId: '', roomName: '' })}
             variant="outlined"
-            sx={{ textTransform: 'none', fontWeight: 600 }}
+            sx={{ textTransform: 'none', fontWeight: 'var(--font-weight-semibold)' }}
           >
             Cancel
           </Button>
@@ -399,7 +402,7 @@ export default function HomePage() {
             onClick={confirmDelete}
             variant="contained"
             color="error"
-            sx={{ textTransform: 'none', fontWeight: 600 }}
+            sx={{ textTransform: 'none', fontWeight: 'var(--font-weight-semibold)' }}
             autoFocus
           >
             Delete Room

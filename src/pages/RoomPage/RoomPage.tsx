@@ -231,14 +231,17 @@ export default function RoomPage() {
         >
           <DialogTitle
             id="confirm-dialog-title"
-            sx={{ fontWeight: 600, fontSize: '1.5rem' }}
+            sx={{
+              fontWeight: 'var(--font-weight-semibold)',
+              fontSize: 'var(--font-size-xl)',
+            }}
           >
             Confirm Identity
           </DialogTitle>
           <DialogContent>
             <DialogContentText
               id="confirm-dialog-description"
-              sx={{ fontSize: '1rem', color: 'text.primary' }}
+              sx={{ fontSize: 'var(--font-size-base)', color: 'text.primary' }}
             >
               Is that really you <strong>{confirmDialog.name}</strong>? Don't ruin it!
             </DialogContentText>
@@ -249,12 +252,12 @@ export default function RoomPage() {
               variant="outlined"
               sx={{
                 textTransform: 'none',
-                fontWeight: 600,
-                borderColor: '#999',
-                color: '#666',
+                fontWeight: 'var(--font-weight-semibold)',
+                borderColor: 'var(--text-gray-medium)',
+                color: 'var(--text-gray-dark)',
                 '&:hover': {
-                  borderColor: '#666',
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  borderColor: 'var(--text-gray-dark)',
+                  backgroundColor: 'var(--overlay-light)',
                 },
               }}
             >
@@ -265,10 +268,10 @@ export default function RoomPage() {
               variant="contained"
               sx={{
                 textTransform: 'none',
-                fontWeight: 600,
-                backgroundColor: '#28a745',
+                fontWeight: 'var(--font-weight-semibold)',
+                backgroundColor: 'var(--primary-color)',
                 '&:hover': {
-                  backgroundColor: '#218838',
+                  backgroundColor: 'var(--primary-hover)',
                 },
               }}
               autoFocus
@@ -377,17 +380,17 @@ export default function RoomPage() {
               variant="contained"
               sx={{
                 textTransform: 'none',
-                fontWeight: 600,
-                fontSize: '1.25rem',
+                fontWeight: 'var(--font-weight-semibold)',
+                fontSize: 'var(--font-size-lg)',
                 padding: '1rem 2rem',
                 borderRadius: '8px',
-                backgroundColor: '#28a745',
+                backgroundColor: 'var(--primary-color)',
                 color: 'white',
                 '&:hover:not(:disabled)': {
-                  backgroundColor: '#218838',
+                  backgroundColor: 'var(--primary-hover)',
                 },
                 '&:disabled': {
-                  backgroundColor: '#28a745',
+                  backgroundColor: 'var(--primary-color)',
                   opacity: 0.6,
                 },
               }}

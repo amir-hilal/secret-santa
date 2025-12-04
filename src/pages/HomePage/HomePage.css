@@ -19,7 +19,7 @@
 }
 
 .admin-column h2 {
-  font-size: 1.5rem;
+  font-size: var(--font-size-xl);
   margin-bottom: 1.5rem;
   color: var(--text-primary);
 }
@@ -57,10 +57,10 @@
 }
 
 .room-item {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-background);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -99,14 +99,14 @@
 }
 
 .room-id {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg);
   font-family: 'Courier New', monospace;
 }
 
 .room-status {
-  font-size: 1.2rem;
+  font-size: var(--font-size-lg);
 }
 
 .room-status.completed {
@@ -122,13 +122,13 @@
 }
 
 .room-date {
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
 .room-progress {
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   color: var(--text-primary);
   margin-bottom: 0.75rem;
 }
@@ -139,7 +139,7 @@
 
 .room-participants strong {
   display: block;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   margin-bottom: 0.5rem;
   color: var(--text-primary);
 }
@@ -152,7 +152,7 @@
 
 .room-action-icon {
   cursor: pointer;
-  font-size: 24px;
+  font-size: var(--font-size-lg);
   transition: all 0.2s ease;
   user-select: none;
 }
@@ -170,7 +170,7 @@
 }
 
 .copy-icon:hover {
-  background-color: #218838;
+  background-color: var(--primary-hover);
 }
 
 .delete-icon {
@@ -178,7 +178,7 @@
 }
 
 .delete-icon:hover {
-  color: #c82333;
+  color: var(--secondary-hover);
   transform: scale(1.1);
 }
 

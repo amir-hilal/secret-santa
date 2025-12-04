@@ -2,14 +2,14 @@
 
 /* Room info */
 .room-info {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-background);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
   padding: 1.5rem;
   border-radius: 8px;
   margin: 1.5rem 0;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -17,12 +17,12 @@
 
 .room-info p {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: var(--font-size-md);
 }
 
 .room-info strong {
   color: var(--primary-color);
-  font-size: 1.1rem;
+  font-size: var(--font-size-md);
 }
 
 /* Stats */
@@ -34,13 +34,13 @@
 }
 
 .stat-item {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-background);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
   padding: 1.25rem;
   border-radius: 8px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,20 +48,20 @@
 }
 
 .stat-label {
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
   color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
 .stat-value {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: var(--primary-color);
 }
 
 /* Result card */
 .result-card {
-  background: linear-gradient(135deg, var(--primary-color), #c82333) !important;
+  background: var(--gradient-primary) !important;
   color: white;
   text-align: center;
 }
@@ -71,15 +71,16 @@
 }
 
 .result-card .info-text {
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--text-primary);
+  opacity: 0.95;
 }
 
 .target-name {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
   margin: 1.5rem 0;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--card-background-lighter);
   border-radius: 8px;
   animation: fadeInScale 0.5s ease;
 }
@@ -123,8 +124,8 @@
 }
 
 .shuffled-name {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
   color: var(--primary-color);
   position: absolute;
   white-space: nowrap;
@@ -144,7 +145,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .target-name {
-    font-size: 2rem;
+    font-size: var(--font-size-3xl);
   }
 
   .participant-list ul {
@@ -161,7 +162,7 @@
 
 @media (max-width: 480px) {
   .target-name {
-    font-size: 1.75rem;
+    font-size: var(--font-size-2xl);
   }
 
   .stat-item {
