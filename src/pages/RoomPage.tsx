@@ -227,41 +227,43 @@ export default function RoomPage() {
           </div>
         ) : (
           // User hasn't picked yet
-          <div className="card pick-card">
-            <h2>Ready to pick your Secret Santa?</h2>
-            <p className="info-text">
-              Click the button below to randomly select who you'll be giving a gift to.
-              Once you pick, you cannot change it!
-            </p>
+          <>
+            <div className="card pick-card">
+              <h2>Ready to pick your Secret Santa?</h2>
+              <p className="info-text">
+                Click the button below to randomly select who you'll be giving a gift to.
+                Once you pick, you cannot change it!
+              </p>
 
-            {pickError && <div className="error-message">{pickError}</div>}
+              {pickError && <div className="error-message">{pickError}</div>}
 
-            <button
-              onClick={handlePick}
-              disabled={picking}
-              className="btn btn-primary btn-large"
-            >
-              {picking ? 'Picking...' : '🎲 Pick my Secret Santa'}
-            </button>
+              <button
+                onClick={handlePick}
+                disabled={picking}
+                className="btn btn-primary btn-large"
+              >
+                {picking ? 'Picking...' : '🎲 Pick my Secret Santa'}
+              </button>
 
-            <div className="available-count">
-              {room.availableTargets
-                ? Object.values(room.availableTargets).filter(Boolean).length
-                : totalParticipants} participants still available
+              <div className="available-count">
+                {room.availableTargets
+                  ? Object.values(room.availableTargets).filter(Boolean).length
+                  : totalParticipants} participants still available
+              </div>
             </div>
-          </div>
-        )}
 
-        <div className="info-box">
-          <h3>How it works:</h3>
-          <ul>
-            <li>Each participant can pick only once</li>
-            <li>You cannot pick yourself</li>
-            <li>Once someone is picked, they're no longer available for others</li>
-            <li>Your pick is saved on this device and in the database</li>
-            <li>Keep your Secret Santa assignment secret! 🤫</li>
-          </ul>
-        </div>
+            <div className="info-box">
+              <h3>How it works:</h3>
+              <ul>
+                <li>Each participant can pick only once</li>
+                <li>You cannot pick yourself</li>
+                <li>Once someone is picked, they're no longer available for others</li>
+                <li>Your pick is saved on this device and in the database</li>
+                <li>Keep your Secret Santa assignment secret! 🤫</li>
+              </ul>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

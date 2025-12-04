@@ -1,4 +1,4 @@
-import { FormEvent, useState, useEffect } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PasswordProtect from '../components/PasswordProtect';
 import { createRoom, subscribeToAllRooms } from '../firebase/roomsService';
@@ -81,7 +81,9 @@ export default function HomePage() {
               <div className="card">
                 <h2>Create New Room</h2>
                 <form onSubmit={handleSubmit} className="create-room-form">
-                  <label htmlFor="participants">Enter participant names (one per line):</label>
+                  <label htmlFor="participants">
+                    Enter participant names (one per line):
+                  </label>
                   <textarea
                     id="participants"
                     value={participantNames}

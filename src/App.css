@@ -35,7 +35,7 @@ body {
 /* Layout */
 .page {
   min-height: 100vh;
-  padding: 2rem 1rem;
+  padding: 1rem;
 }
 
 .container {
@@ -75,7 +75,7 @@ h3 {
   background: var(--card-background);
   border-radius: 12px;
   padding: 2rem;
-  margin: 2rem 0;
+  margin: 0;
   box-shadow: var(--shadow);
   transition: box-shadow 0.3s ease;
 }
@@ -652,7 +652,7 @@ textarea {
   .admin-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .rooms-list {
     max-height: 500px;
   }
@@ -662,7 +662,7 @@ textarea {
   .admin-page .container {
     max-width: 100%;
   }
-  
+
   .admin-grid {
     gap: 1.5rem;
   }

@@ -1,6 +1,6 @@
-import { ref, set, get, onValue, runTransaction, push } from 'firebase/database';
+import { get, onValue, push, ref, runTransaction, set } from 'firebase/database';
+import { Assignment, Participant, Room } from '../types';
 import { db } from './firebase';
-import { Room, Participant, Assignment } from '../types';
 
 /**
  * Create a new Secret Santa room with the given participant names
@@ -213,9 +213,7 @@ export function getTargetName(room: Room, participantId: string): string | null 
  * @param callback - Function called with updated rooms data
  * @returns Unsubscribe function to stop listening
  */
-export function subscribeToAllRooms(
-  callback: (rooms: Room[]) => void
-): () => void {
+export function subscribeToAllRooms(callback: (rooms: Room[]) => void): () => void {
   const roomsRef = ref(db, 'rooms');
 
   const unsubscribe = onValue(roomsRef, (snapshot) => {
