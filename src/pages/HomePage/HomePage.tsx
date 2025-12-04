@@ -11,8 +11,8 @@ import {
 } from '@mui/material';
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ParticipantTags from '../../components/ParticipantTags';
-import PasswordProtect from '../../components/PasswordProtect';
+import ParticipantTags from '../../components/ParticipantTags/ParticipantTags';
+import PasswordProtect from '../../components/PasswordProtect/PasswordProtect';
 import { createRoom, deleteRoom, subscribeToAllRooms } from '../../firebase/roomsService';
 import { Room } from '../../types';
 import './HomePage.css';

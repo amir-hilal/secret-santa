@@ -8,8 +8,8 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import LoadingAnimation from '../../components/LoadingAnimation';
-import ParticipantTags from '../../components/ParticipantTags';
+import LoadingAnimation from '../../components/LoadingAnimation/LoadingAnimation';
+import ParticipantTags from '../../components/ParticipantTags/ParticipantTags';
 import { assignSecretSanta, getTargetName } from '../../firebase/roomsService';
 import { useRoom } from '../../hooks/useRoom';
 import { useAppDispatch } from '../../store/hooks';

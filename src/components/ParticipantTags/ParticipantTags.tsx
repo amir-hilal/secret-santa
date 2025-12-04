@@ -1,4 +1,5 @@
-import { Assignment, Participant } from '../types';
+import { Assignment, Participant } from '../../types';
+import './ParticipantTags.css';
 
 interface ParticipantTagsProps {
   participants: Record<string, Participant>;
