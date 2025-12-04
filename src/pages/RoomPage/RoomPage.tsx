@@ -1,14 +1,19 @@
-import { Button } from '@mui/material';
-import { FormEvent, useEffect, useState } from 'react';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import LoadingAnimation from '../../components/LoadingAnimation';
 import ParticipantTags from '../../components/ParticipantTags';
-import {
-  assignSecretSanta,
-  findParticipantIdByName,
-  getTargetName,
-} from '../../firebase/roomsService';
+import { assignSecretSanta, getTargetName } from '../../firebase/roomsService';
 import { useRoom } from '../../hooks/useRoom';
+import { useAppDispatch } from '../../store/hooks';
+import { setRoom } from '../../store/roomSlice';
 import { getLocalParticipant, setLocalParticipant } from '../../utils/localStorage';
 import './RoomPage.css';
 
@@ -22,11 +27,18 @@ export default function RoomPage() {
 
   const [localParticipantId, setLocalParticipantId] = useState<string | null>(null);
   const [localParticipantName, setLocalParticipantName] = useState<string | null>(null);
-  const [nameInput, setNameInput] = useState('');
-  const [nameError, setNameError] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
   const [pickError, setPickError] = useState<string | null>(null);
   const [animationData, setAnimationData] = useState<object | null>(null);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean;
+    participantId: string;
+    name: string;
+  }>({ open: false, participantId: '', name: '' });
+  const [shuffling, setShuffling] = useState(false);
+  const [shuffledName, setShuffledName] = useState<string>('');
+
+  const dispatch = useAppDispatch();
 
   // Load Lottie animation
   useEffect(() => {
@@ -46,64 +58,95 @@ export default function RoomPage() {
     }
   }, [roomId]);
 
-  // Handle name submission for first-time users
-  const handleNameSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setNameError(null);
-
-    if (!room || !roomId) return;
-
-    const participantId = findParticipantIdByName(room, nameInput);
-
-    if (!participantId) {
-      setNameError(
-        'Name not found in this room. Please ask the organizer to spell it exactly as entered.'
-      );
-      return;
+  // Update Redux store when room changes
+  useEffect(() => {
+    if (room) {
+      dispatch(setRoom(room));
     }
+  }, [room, dispatch]);
+
+  // Handle participant selection
+  const handleParticipantSelect = (participantId: string, name: string) => {
+    setConfirmDialog({ open: true, participantId, name });
+  };
+
+  // Confirm participant identity
+  const confirmIdentity = () => {
+    const { participantId, name } = confirmDialog;
+    setConfirmDialog({ open: false, participantId: '', name: '' });
+
+    if (!roomId) return;
 
     // Save to localStorage and state
     const localData = {
       participantId,
-      name: room.participants[participantId].name,
+      name,
     };
     setLocalParticipant(roomId, localData);
     setLocalParticipantId(participantId);
-    setLocalParticipantName(localData.name);
+    setLocalParticipantName(name);
+  };
+
+  // Cancel participant selection
+  const cancelIdentity = () => {
+    setConfirmDialog({ open: false, participantId: '', name: '' });
   };
 
   // Handle picking Secret Santa
   const handlePick = async () => {
-    if (!roomId || !localParticipantId) return;
+    if (!roomId || !localParticipantId || !room) return;
 
     setPicking(true);
+    setShuffling(true);
     setPickError(null);
 
-    try {
-      await assignSecretSanta(roomId, localParticipantId);
+    // Get available participants for shuffling
+    const availableParticipants = Object.entries(room.participants)
+      .filter(([id]) => {
+        if (id === localParticipantId) return false; // Can't pick yourself
+        if (room.availableTargets && !room.availableTargets[id]) return false;
+        return true;
+      })
+      .map(([, participant]) => participant.name);
 
-      // The room will update via the subscription, triggering a re-render
-      // Update localStorage with target name once we have it
-      if (room) {
-        const targetName = getTargetName(room, localParticipantId);
-        if (targetName && localParticipantName) {
-          setLocalParticipant(roomId, {
-            participantId: localParticipantId,
-            name: localParticipantName,
-            targetName,
-          });
+    // Shuffle animation for 5 seconds
+    const shuffleInterval = setInterval(() => {
+      const randomName =
+        availableParticipants[Math.floor(Math.random() * availableParticipants.length)];
+      setShuffledName(randomName);
+    }, 100); // Change name every 100ms
+
+    // After 5 seconds, make the actual assignment
+    setTimeout(async () => {
+      clearInterval(shuffleInterval);
+      setShuffling(false);
+
+      try {
+        await assignSecretSanta(roomId, localParticipantId);
+
+        // The room will update via the subscription, triggering a re-render
+        // Update localStorage with target name once we have it
+        if (room) {
+          const targetName = getTargetName(room, localParticipantId);
+          if (targetName && localParticipantName) {
+            setLocalParticipant(roomId, {
+              participantId: localParticipantId,
+              name: localParticipantName,
+              targetName,
+            });
+          }
         }
+      } catch (err) {
+        console.error('Error picking Secret Santa:', err);
+        setPickError(
+          err instanceof Error
+            ? err.message
+            : 'Failed to pick Secret Santa. Please try again.'
+        );
+      } finally {
+        setPicking(false);
       }
-    } catch (err) {
-      console.error('Error picking Secret Santa:', err);
-      setPickError(
-        err instanceof Error
-          ? err.message
-          : 'Failed to pick Secret Santa. Please try again.'
-      );
-    } finally {
-      setPicking(false);
-    }
+    }, 5000);
   };
 
   // Loading state
@@ -157,48 +200,71 @@ export default function RoomPage() {
           <h1>🎅 {room.name}</h1>
 
           <div className="card">
-            <h2>Welcome!</h2>
-            <p>Enter your name to join this Secret Santa game.</p>
-
-            <form onSubmit={handleNameSubmit} className="name-form">
-              <label htmlFor="name">What is your name?</label>
-              <input
-                type="text"
-                id="name"
-                value={nameInput}
-                onChange={(e) => setNameInput(e.target.value)}
-                placeholder="Enter your name"
-                required
-              />
-
-              {nameError && <div className="error-message">{nameError}</div>}
-
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  fontSize: '1rem',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '8px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#218838',
-                  },
-                }}
-              >
-                Join room
-              </Button>
-            </form>
+            <h2>Who are you?</h2>
+            <p>Select your name from the participants below.</p>
 
             <div className="participant-list">
-              <h3>Participants in this room:</h3>
-              <ParticipantTags participants={room.participants} />
+              <ParticipantTags
+                participants={room.participants}
+                assignments={room.assignments}
+                onSelect={handleParticipantSelect}
+                selectable={true}
+              />
             </div>
           </div>
         </div>
+
+        <Dialog
+          open={confirmDialog.open}
+          onClose={cancelIdentity}
+          aria-labelledby="confirm-dialog-title"
+          aria-describedby="confirm-dialog-description"
+          PaperProps={{
+            sx: {
+              borderRadius: 3,
+              padding: 1,
+            },
+          }}
+        >
+          <DialogTitle
+            id="confirm-dialog-title"
+            sx={{ fontWeight: 600, fontSize: '1.5rem' }}
+          >
+            Confirm Identity
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              id="confirm-dialog-description"
+              sx={{ fontSize: '1rem', color: 'text.primary' }}
+            >
+              Is that really you <strong>{confirmDialog.name}</strong>? Don't ruin it!
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions sx={{ padding: 2, gap: 1 }}>
+            <Button
+              onClick={cancelIdentity}
+              variant="outlined"
+              sx={{ textTransform: 'none', fontWeight: 600 }}
+            >
+              no, sorry :(
+            </Button>
+            <Button
+              onClick={confirmIdentity}
+              variant="contained"
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                backgroundColor: '#28a745',
+                '&:hover': {
+                  backgroundColor: '#218838',
+                },
+              }}
+              autoFocus
+            >
+              YES!
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   } // User has identified themselves
@@ -246,59 +312,53 @@ export default function RoomPage() {
           </div>
         ) : (
           // User hasn't picked yet
-          <>
-            <div className="card pick-card">
-              <h2>Ready to pick your Secret Santa?</h2>
-              <p className="info-text">
-                Click the button below to randomly select who you'll be giving a gift to.
-                Once you pick, you cannot change it!
-              </p>
+          <div className="card pick-card">
+            <h2>Ready to pick your Secret Santa?</h2>
+            <p className="info-text">
+              Click the button below to randomly select who you'll be giving a gift to.
+              Once you pick, you cannot change it!
+            </p>
 
-              {pickError && <div className="error-message">{pickError}</div>}
+            {pickError && <div className="error-message">{pickError}</div>}
 
-              <Button
-                onClick={handlePick}
-                disabled={picking}
-                variant="contained"
-                sx={{
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  fontSize: '1.25rem',
-                  padding: '1rem 2rem',
-                  borderRadius: '8px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  '&:hover:not(:disabled)': {
-                    backgroundColor: '#218838',
-                  },
-                  '&:disabled': {
-                    backgroundColor: '#28a745',
-                    opacity: 0.6,
-                  },
-                }}
-              >
-                {picking ? 'Picking...' : '🎲 Pick my Secret Santa'}
-              </Button>
-
-              <div className="available-count">
-                {room.availableTargets
-                  ? Object.values(room.availableTargets).filter(Boolean).length
-                  : totalParticipants}{' '}
-                participants still available
+            {shuffling && (
+              <div className="shuffle-animation">
+                <h3 className="shuffling-label">🎲 Shuffling...</h3>
+                <div className="shuffled-name">{shuffledName}</div>
               </div>
-            </div>
+            )}
 
-            <div className="info-box">
-              <h3>How it works:</h3>
-              <ul>
-                <li>Each participant can pick only once</li>
-                <li>You cannot pick yourself</li>
-                <li>Once someone is picked, they're no longer available for others</li>
-                <li>Your pick is saved on this device and in the database</li>
-                <li>Keep your Secret Santa assignment secret! 🤫</li>
-              </ul>
+            <Button
+              onClick={handlePick}
+              disabled={picking}
+              variant="contained"
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                fontSize: '1.25rem',
+                padding: '1rem 2rem',
+                borderRadius: '8px',
+                backgroundColor: '#28a745',
+                color: 'white',
+                '&:hover:not(:disabled)': {
+                  backgroundColor: '#218838',
+                },
+                '&:disabled': {
+                  backgroundColor: '#28a745',
+                  opacity: 0.6,
+                },
+              }}
+            >
+              {picking ? 'Picking...' : '🎲 Pick my Secret Santa'}
+            </Button>
+
+            <div className="available-count">
+              {room.availableTargets
+                ? Object.values(room.availableTargets).filter(Boolean).length
+                : totalParticipants}{' '}
+              participants still available
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

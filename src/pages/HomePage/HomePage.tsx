@@ -292,7 +292,10 @@ export default function HomePage() {
                             </p>
                             <div className="room-participants">
                               <strong>Participants:</strong>
-                              <ParticipantTags participants={room.participants} />
+                              <ParticipantTags
+                                participants={room.participants}
+                                assignments={room.assignments}
+                              />
                             </div>
                           </div>
 
