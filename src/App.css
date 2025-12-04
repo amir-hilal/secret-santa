@@ -85,7 +85,7 @@ body {
 h1 {
   font-size: var(--font-size-4xl);
   margin-bottom: 0.5rem;
-  color: var(--primary-color);
+  color: var(--text-primary);
   text-align: center;
 }
 
