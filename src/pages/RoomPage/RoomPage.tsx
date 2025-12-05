@@ -303,25 +303,6 @@ export default function RoomPage() {
           </p>
         </div>
 
-        <div className="stats">
-          <div className="stat-item">
-            <span className="stat-label">Total participants:</span>
-            <span className="stat-value">{totalParticipants}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">Assignments made:</span>
-            <span className="stat-value">
-              {assignedCount} / {totalParticipants}
-            </span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">Status:</span>
-            <span className="stat-value">
-              {isCompleted ? '✅ Completed' : '🔄 In progress'}
-            </span>
-          </div>
-        </div>
-
         {targetName ? (
           // User has already picked
           <div className="card result-card">
@@ -420,6 +401,25 @@ export default function RoomPage() {
             </div>
           </div>
         )}
+
+        <div className="stats">
+          <div className="stat-item">
+            <span className="stat-label">Total participants:</span>
+            <span className="stat-value">{totalParticipants}</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-label">Assignments made:</span>
+            <span className="stat-value">
+              {assignedCount} / {totalParticipants}
+            </span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-label">Status:</span>
+            <span className="stat-value">
+              {isCompleted ? '✅ Completed' : '🔄 In progress'}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
