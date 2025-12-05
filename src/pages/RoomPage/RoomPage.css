@@ -61,13 +61,38 @@
 
 /* Result card */
 .result-card {
-  background: var(--gradient-primary) !important;
+  background: linear-gradient(-45deg, #28a745, #dc3545, #28a745);
+  background-size: 200% 200%;
   color: white;
   text-align: center;
   min-height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  animation:
+    fadeInCard 0.5s ease,
+    fancyGradient 12s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.result-card::after {
+  content: '✨';
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0;
+  animation: sparkle 2s ease-in-out infinite;
 }
 
 .result-card h2 {
@@ -82,11 +107,74 @@
 .target-name {
   font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
-  margin: 1.5rem 0;
+  margin: 0.5rem 0;
   padding: 1rem;
-  background: var(--card-background-lighter);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
   border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   animation: fadeInScale 0.5s ease;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px rgba(255, 255, 255, 0.2);
+  }
+}
+
+@keyframes fadeInCard {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fancyGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 50% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+    top: 20%;
+    left: 80%;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5) rotate(180deg);
+  }
 }
 
 @keyframes fadeInScale {
@@ -106,7 +194,7 @@
   min-height: 300px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .available-count {
