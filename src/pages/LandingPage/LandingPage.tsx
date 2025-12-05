@@ -212,55 +212,6 @@ export default function LandingPage() {
             <li>Each participant picks their Secret Santa anonymously</li>
           </ol>
         </div>
-
-        {currentUser.uid && (
-          <div className="user-info">
-            <p>
-              Signed in as: <strong>{currentUser.email}</strong>
-            </p>
-            <div
-              style={{
-                display: 'flex',
-                gap: '0.75rem',
-                marginTop: '1rem',
-                flexWrap: 'wrap',
-              }}
-            >
-              <Button
-                onClick={() => navigate('/my-rooms')}
-                variant="outlined"
-                sx={{
-                  textTransform: 'none',
-                  borderColor: 'var(--primary-color)',
-                  color: 'var(--primary-color)',
-                  '&:hover': {
-                    borderColor: 'var(--primary-hover)',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                  },
-                }}
-              >
-                View My Rooms
-              </Button>
-              {currentUser.email === 'amir.hilal@hilalpines.com' && (
-                <Button
-                  onClick={() => navigate('/admin')}
-                  variant="outlined"
-                  sx={{
-                    textTransform: 'none',
-                    borderColor: 'var(--secondary-color)',
-                    color: 'var(--secondary-color)',
-                    '&:hover': {
-                      borderColor: 'var(--secondary-color)',
-                      backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                    },
-                  }}
-                >
-                  View as Admin
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Login Overlay */}
