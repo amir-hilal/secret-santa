@@ -352,7 +352,7 @@ export async function resetRoomAssignments(roomId: string): Promise<void> {
  */
 export async function verifyRoomPin(roomId: string, pin: string): Promise<boolean> {
   const room = await getRoom(roomId);
-  
+
   if (!room) {
     throw new Error('Room not found');
   }

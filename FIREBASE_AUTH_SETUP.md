@@ -16,6 +16,7 @@ To use Google Sign-In in your Secret Santa application, you need to enable it in
 ## That's it!
 
 Your application is now configured to use Google Authentication. Users will be able to:
+
 - Sign in with their Google account when creating rooms
 - Access the admin dashboard to manage their rooms
 - Create both public and secured (PIN-protected) rooms
@@ -23,6 +24,7 @@ Your application is now configured to use Google Authentication. Users will be a
 ## Testing
 
 To test the Google login:
+
 1. Run your application (`npm run dev`)
 2. Go to the landing page
 3. Fill in room details

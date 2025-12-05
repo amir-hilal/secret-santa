@@ -106,12 +106,7 @@ export default function RoomCreatedPage() {
           <div className="room-detail-item">
             <label>Room URL:</label>
             <div className="detail-value-with-copy">
-              <input
-                type="text"
-                value={roomUrl}
-                readOnly
-                className="url-input"
-              />
+              <input type="text" value={roomUrl} readOnly className="url-input" />
               <Button
                 onClick={handleCopyUrl}
                 variant="contained"

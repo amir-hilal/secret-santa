@@ -45,7 +45,7 @@ export default function RoomPinPage() {
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').trim();
-    
+
     // Check if pasted data is 4 digits
     if (/^\d{4}$/.test(pastedData)) {
       const newPin = pastedData.split('');
@@ -58,9 +58,9 @@ export default function RoomPinPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const enteredPin = pin.join('');
-    
+
     if (enteredPin.length !== 4) {
       setError('Please enter all 4 digits');
       return;
@@ -68,7 +68,7 @@ export default function RoomPinPage() {
 
     // TODO: Verify PIN with Firebase
     const correctPin = '1234'; // TODO: Get from Firebase
-    
+
     if (enteredPin === correctPin) {
       // Store PIN verification in sessionStorage
       sessionStorage.setItem(`room-${roomId}-verified`, 'true');
