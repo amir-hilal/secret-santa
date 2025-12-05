@@ -1,14 +1,8 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from '@mui/material';
+import { Button } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import GlassDialog from '../../components/GlassDialog/GlassDialog';
 import LoadingAnimation from '../../components/LoadingAnimation/LoadingAnimation';
 import ParticipantTags from '../../components/ParticipantTags/ParticipantTags';
 import { assignSecretSanta, getTargetName } from '../../firebase/roomsService';
@@ -215,77 +209,18 @@ export default function RoomPage() {
           </div>
         </div>
 
-        <Dialog
+        <GlassDialog
           open={confirmDialog.open}
           onClose={cancelIdentity}
           aria-labelledby="confirm-dialog-title"
           aria-describedby="confirm-dialog-description"
-          slotProps={{
-            paper: {
-              sx: {
-                borderRadius: 3,
-                padding: 1,
-                background: 'var(--card-background)',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-                border: '1px solid var(--border-color)',
-                boxShadow: 'var(--shadow)',
-              },
-            },
+          dialogData={{
+            type: 'confirm-identity',
+            name: confirmDialog.name,
+            onConfirm: confirmIdentity,
+            onCancel: cancelIdentity,
           }}
-        >
-          <DialogTitle
-            id="confirm-dialog-title"
-            sx={{
-              fontWeight: 'var(--font-weight-semibold)',
-              fontSize: 'var(--font-size-xl)',
-              color: 'var(--text-primary)',
-            }}
-          >
-            Confirm Identity
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText
-              id="confirm-dialog-description"
-              sx={{ fontSize: 'var(--font-size-base)', color: 'var(--text-gray)' }}
-            >
-              Is that really you <strong>{confirmDialog.name}</strong>? Don't ruin it!
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions sx={{ padding: 2, gap: 1 }}>
-            <Button
-              onClick={cancelIdentity}
-              variant="outlined"
-              sx={{
-                textTransform: 'none',
-                fontWeight: 'var(--font-weight-semibold)',
-                borderColor: 'var(--text-gray)',
-                color: 'var(--text-gray)',
-                '&:hover': {
-                  borderColor: 'var(--text-primary)',
-                  backgroundColor: 'var(--overlay-light)',
-                },
-              }}
-            >
-              no, sorry :(
-            </Button>
-            <Button
-              onClick={confirmIdentity}
-              variant="contained"
-              sx={{
-                textTransform: 'none',
-                fontWeight: 'var(--font-weight-semibold)',
-                backgroundColor: 'var(--primary-color)',
-                '&:hover': {
-                  backgroundColor: 'var(--primary-hover)',
-                },
-              }}
-              autoFocus
-            >
-              YES!
-            </Button>
-          </DialogActions>
-        </Dialog>
+        />
       </div>
     );
   } // User has identified themselves

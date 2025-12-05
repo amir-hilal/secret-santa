@@ -251,3 +251,85 @@ export async function deleteRoom(roomId: string): Promise<void> {
   const roomRef = ref(db, `rooms/${roomId}`);
   await set(roomRef, null);
 }
+
+/**
+ * Update room name
+ *
+ * @param roomId - The room ID to update
+ * @param newName - The new room name
+ */
+export async function updateRoomName(roomId: string, newName: string): Promise<void> {
+  const roomNameRef = ref(db, `rooms/${roomId}/name`);
+  await set(roomNameRef, newName.trim());
+}
+
+/**
+ * Update room participants
+ *
+ * @param roomId - The room ID to update
+ * @param participantNames - Array of new participant names
+ */
+export async function updateRoomParticipants(
+  roomId: string,
+  participantNames: string[]
+): Promise<void> {
+  const roomRef = ref(db, `rooms/${roomId}`);
+  const snapshot = await get(roomRef);
+
+  if (!snapshot.exists()) {
+    throw new Error('Room not found');
+  }
+
+  const room = snapshot.val();
+
+  // Create new participant objects
+  const participants: Record<string, Participant> = {};
+  const availableTargets: Record<string, boolean> = {};
+
+  participantNames.forEach((name, index) => {
+    const participantId = `p${index + 1}_${Date.now()}`;
+    participants[participantId] = {
+      id: participantId,
+      name: name.trim(),
+    };
+    availableTargets[participantId] = true;
+  });
+
+  // Update participants while preserving other room data
+  await set(roomRef, {
+    ...room,
+    participants,
+    availableTargets,
+    assignments: room.assignments || {},
+  });
+}
+
+/**
+ * Reset all assignments in a room (keeps participants, clears assignments)
+ *
+ * @param roomId - The room ID to reset
+ */
+export async function resetRoomAssignments(roomId: string): Promise<void> {
+  const roomRef = ref(db, `rooms/${roomId}`);
+  const snapshot = await get(roomRef);
+
+  if (!snapshot.exists()) {
+    throw new Error('Room not found');
+  }
+
+  const room = snapshot.val();
+
+  // Reset availableTargets to all true
+  const availableTargets: Record<string, boolean> = {};
+  Object.keys(room.participants).forEach((participantId) => {
+    availableTargets[participantId] = true;
+  });
+
+  // Clear assignments and reset status
+  await set(roomRef, {
+    ...room,
+    availableTargets,
+    assignments: {},
+    status: 'open',
+  });
+}

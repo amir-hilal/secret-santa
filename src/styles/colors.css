@@ -12,6 +12,8 @@
   --error-color: #dc3545;
   --error-hover: #bd2130;
   --success-color: #28a745;
+  --warning-color: #ff9800;
+  --warning-hover: #f57c00;
 
   /* Background Colors */
   --background: #0a1628;

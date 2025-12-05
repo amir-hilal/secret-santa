@@ -1,19 +1,17 @@
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Snackbar,
-  Tooltip,
-} from '@mui/material';
+import { Alert, Button, Snackbar, Tooltip } from '@mui/material';
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import GlassDialog from '../../components/GlassDialog/GlassDialog';
 import ParticipantTags from '../../components/ParticipantTags/ParticipantTags';
 import PasswordProtect from '../../components/PasswordProtect/PasswordProtect';
-import { createRoom, deleteRoom, subscribeToAllRooms } from '../../firebase/roomsService';
+import {
+  createRoom,
+  deleteRoom,
+  resetRoomAssignments,
+  subscribeToAllRooms,
+  updateRoomName,
+  updateRoomParticipants,
+} from '../../firebase/roomsService';
 import { Room } from '../../types';
 import './HomePage.css';
 
@@ -34,6 +32,17 @@ export default function HomePage() {
   }>({ open: false, message: '', severity: 'success' });
   const [copiedRoomId, setCopiedRoomId] = useState<string | null>(null);
   const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    roomId: string;
+    roomName: string;
+  }>({ open: false, roomId: '', roomName: '' });
+  const [editDialog, setEditDialog] = useState<{
+    open: boolean;
+    roomId: string;
+    roomName: string;
+    participants: string;
+  }>({ open: false, roomId: '', roomName: '', participants: '' });
+  const [resetDialog, setResetDialog] = useState<{
     open: boolean;
     roomId: string;
     roomName: string;
@@ -117,6 +126,101 @@ export default function HomePage() {
       setSnackbar({
         open: true,
         message: 'Failed to delete room. Please try again.',
+        severity: 'error',
+      });
+    }
+  };
+
+  const handleEditRoom = (room: Room) => {
+    const participantsList = Object.values(room.participants)
+      .map((p) => p.name)
+      .join('\n');
+    setEditDialog({
+      open: true,
+      roomId: room.id,
+      roomName: room.name,
+      participants: participantsList,
+    });
+  };
+
+  const confirmEdit = async () => {
+    const { roomId, roomName, participants } = editDialog;
+
+    // Validate
+    if (!roomName.trim()) {
+      setSnackbar({
+        open: true,
+        message: 'Room name cannot be empty',
+        severity: 'error',
+      });
+      return;
+    }
+
+    const names = participants
+      .split('\n')
+      .map((name) => name.trim())
+      .filter((name) => name.length > 0);
+
+    if (names.length < 2) {
+      setSnackbar({
+        open: true,
+        message: 'Please enter at least 2 participants',
+        severity: 'error',
+      });
+      return;
+    }
+
+    // Check for duplicates
+    const uniqueNames = new Set(names.map((n) => n.toLowerCase()));
+    if (uniqueNames.size !== names.length) {
+      setSnackbar({
+        open: true,
+        message: 'Duplicate names detected',
+        severity: 'error',
+      });
+      return;
+    }
+
+    setEditDialog({ open: false, roomId: '', roomName: '', participants: '' });
+
+    try {
+      await updateRoomName(roomId, roomName);
+      await updateRoomParticipants(roomId, names);
+      setSnackbar({
+        open: true,
+        message: 'Room updated successfully',
+        severity: 'success',
+      });
+    } catch (err) {
+      console.error('Error updating room:', err);
+      setSnackbar({
+        open: true,
+        message: 'Failed to update room. Please try again.',
+        severity: 'error',
+      });
+    }
+  };
+
+  const handleResetRoom = (roomId: string, roomName: string) => {
+    setResetDialog({ open: true, roomId, roomName });
+  };
+
+  const confirmReset = async () => {
+    const { roomId, roomName } = resetDialog;
+    setResetDialog({ open: false, roomId: '', roomName: '' });
+
+    try {
+      await resetRoomAssignments(roomId);
+      setSnackbar({
+        open: true,
+        message: `Room "${roomName}" has been reset successfully`,
+        severity: 'success',
+      });
+    } catch (err) {
+      console.error('Error resetting room:', err);
+      setSnackbar({
+        open: true,
+        message: 'Failed to reset room. Please try again.',
         severity: 'error',
       });
     }
@@ -303,6 +407,66 @@ export default function HomePage() {
                             <Button
                               onClick={(e) => {
                                 e.stopPropagation();
+                                handleResetRoom(room.id, room.name);
+                              }}
+                              title="Reset assignments"
+                              sx={{
+                                borderRadius: '50%',
+                                minWidth: 'auto',
+                                width: '40px',
+                                height: '40px',
+                                padding: '0.5rem',
+                                border: 'none',
+                                backgroundColor: 'var(--warning-color)',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                '&:hover': {
+                                  backgroundColor: 'var(--warning-hover)',
+                                },
+                              }}
+                            >
+                              <span
+                                className="material-symbols-outlined"
+                                style={{ fontSize: '24px' }}
+                              >
+                                restart_alt
+                              </span>
+                            </Button>
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditRoom(room);
+                              }}
+                              title="Edit room"
+                              sx={{
+                                borderRadius: '50%',
+                                minWidth: 'auto',
+                                width: '40px',
+                                height: '40px',
+                                padding: '0.5rem',
+                                border: 'none',
+                                backgroundColor: 'var(--primary-color)',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                '&:hover': {
+                                  backgroundColor: 'var(--primary-hover)',
+                                },
+                              }}
+                            >
+                              <span
+                                className="material-symbols-outlined"
+                                style={{ fontSize: '24px' }}
+                              >
+                                edit
+                              </span>
+                            </Button>
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 handleDeleteRoom(room.id, room.name);
                               }}
                               title="Delete room"
@@ -357,58 +521,52 @@ export default function HomePage() {
         </Alert>
       </Snackbar>
 
-      <Dialog
+      <GlassDialog
         open={deleteDialog.open}
         onClose={() => setDeleteDialog({ open: false, roomId: '', roomName: '' })}
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-description"
-        slotProps={{
-          paper: {
-            sx: {
-              borderRadius: 3,
-              padding: 1,
-            },
-          },
+        dialogData={{
+          type: 'delete-room',
+          roomName: deleteDialog.roomName,
+          onConfirm: confirmDelete,
+          onCancel: () => setDeleteDialog({ open: false, roomId: '', roomName: '' }),
         }}
-      >
-        <DialogTitle
-          id="delete-dialog-title"
-          sx={{
-            fontWeight: 'var(--font-weight-semibold)',
-            fontSize: 'var(--font-size-xl)',
-          }}
-        >
-          Delete Room?
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText
-            id="delete-dialog-description"
-            sx={{ fontSize: 'var(--font-size-base)', color: 'text.primary' }}
-          >
-            Are you sure you want to delete the room{' '}
-            <strong>"{deleteDialog.roomName}"</strong>? This action cannot be undone and
-            all participant data will be lost.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ padding: 2, gap: 1 }}>
-          <Button
-            onClick={() => setDeleteDialog({ open: false, roomId: '', roomName: '' })}
-            variant="outlined"
-            sx={{ textTransform: 'none', fontWeight: 'var(--font-weight-semibold)' }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={confirmDelete}
-            variant="contained"
-            color="error"
-            sx={{ textTransform: 'none', fontWeight: 'var(--font-weight-semibold)' }}
-            autoFocus
-          >
-            Delete Room
-          </Button>
-        </DialogActions>
-      </Dialog>
+      />
+
+      <GlassDialog
+        open={editDialog.open}
+        onClose={() =>
+          setEditDialog({ open: false, roomId: '', roomName: '', participants: '' })
+        }
+        aria-labelledby="edit-dialog-title"
+        maxWidth="sm"
+        fullWidth
+        dialogData={{
+          type: 'edit-room',
+          roomName: editDialog.roomName,
+          participants: editDialog.participants,
+          onRoomNameChange: (name) => setEditDialog({ ...editDialog, roomName: name }),
+          onParticipantsChange: (participants) =>
+            setEditDialog({ ...editDialog, participants }),
+          onConfirm: confirmEdit,
+          onCancel: () =>
+            setEditDialog({ open: false, roomId: '', roomName: '', participants: '' }),
+        }}
+      />
+
+      <GlassDialog
+        open={resetDialog.open}
+        onClose={() => setResetDialog({ open: false, roomId: '', roomName: '' })}
+        aria-labelledby="reset-dialog-title"
+        aria-describedby="reset-dialog-description"
+        dialogData={{
+          type: 'reset-room',
+          roomName: resetDialog.roomName,
+          onConfirm: confirmReset,
+          onCancel: () => setResetDialog({ open: false, roomId: '', roomName: '' }),
+        }}
+      />
     </PasswordProtect>
   );
 }
