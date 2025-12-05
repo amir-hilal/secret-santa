@@ -185,7 +185,6 @@ export default function RoomPage() {
   // Calculate stats
   const totalParticipants = Object.keys(room.participants).length;
   const assignedCount = room.assignments ? Object.keys(room.assignments).length : 0;
-  const isCompleted = room.status === 'completed';
 
   // User hasn't identified themselves yet
   if (!localParticipantId) {
@@ -250,11 +249,23 @@ export default function RoomPage() {
         ) : (
           // User hasn't picked yet
           <div className="card pick-card">
-            <h2>Ready to pick your Secret Santa?</h2>
-            <p className="info-text">
-              Click the button below to randomly select who you'll be giving a gift to.
-              Once you pick, you cannot change it!
-            </p>
+            {!picking && (
+              <div className="participant-list">
+                <h3>✨ Your Secret Santa could be one of these...</h3>
+                <ParticipantTags
+                  participants={Object.fromEntries(
+                    Object.entries(room.participants).filter(([id]) => {
+                      if (id === localParticipantId) return false; // Exclude yourself
+                      if (room.availableTargets && !room.availableTargets[id])
+                        return false; // Exclude already picked
+                      return true;
+                    })
+                  )}
+                  assignments={{}}
+                  selectable={false}
+                />
+              </div>
+            )}
 
             {pickError && <div className="error-message">{pickError}</div>}
 
@@ -313,24 +324,9 @@ export default function RoomPage() {
                   },
                 }}
               >
-                🎲 Pick my Secret Santa
+                🎁 Let the magic begin!
               </Button>
             )}
-
-            <div className="participant-list">
-              <h3>✨ Your Secret Santa could be one of these...</h3>
-              <ParticipantTags
-                participants={Object.fromEntries(
-                  Object.entries(room.participants).filter(([id]) => {
-                    if (id === localParticipantId) return false; // Exclude yourself
-                    if (room.availableTargets && !room.availableTargets[id]) return false; // Exclude already picked
-                    return true;
-                  })
-                )}
-                assignments={{}}
-                selectable={false}
-              />
-            </div>
           </div>
         )}
 
@@ -343,12 +339,6 @@ export default function RoomPage() {
             <span className="stat-label">Assignments made:</span>
             <span className="stat-value">
               {assignedCount} / {totalParticipants}
-            </span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">Status:</span>
-            <span className="stat-value">
-              {isCompleted ? '✅ Completed' : '🔄 In progress'}
             </span>
           </div>
         </div>

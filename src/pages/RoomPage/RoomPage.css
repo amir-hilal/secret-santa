@@ -28,7 +28,7 @@
 /* Stats */
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin: 2rem 0;
 }
@@ -64,6 +64,10 @@
   background: var(--gradient-primary) !important;
   color: white;
   text-align: center;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .result-card h2 {
@@ -99,6 +103,10 @@
 /* Pick card */
 .pick-card {
   text-align: center;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .available-count {
@@ -108,7 +116,7 @@
 }
 
 .shuffle-animation {
-  margin: 2rem 0;
+  margin: 1rem 0;
   text-align: center;
   min-height: 200px;
   position: relative;
@@ -133,9 +141,7 @@
 
 /* Participant list */
 .participant-list {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid var(--border-color);
+  padding: 1rem 0;
 }
 
 .participant-list h3 {
