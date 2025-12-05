@@ -13,13 +13,13 @@ import {
   updateRoomParticipants,
 } from '../../firebase/roomsService';
 import { Room } from '../../types';
-import './HomePage.css';
+import './AdminPage.css';
 
 /**
- * HomePage - Admin page to create rooms and view all existing rooms
+ * AdminPage - Admin page to create rooms and view all existing rooms
  * Protected by password authentication
  */
-export default function HomePage() {
+export default function AdminPage() {
   const [roomName, setRoomName] = useState('');
   const [participantNames, setParticipantNames] = useState('');
   const [loading, setLoading] = useState(false);

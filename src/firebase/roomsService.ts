@@ -7,12 +7,16 @@ import { db } from './firebase';
  *
  * @param roomName - The name of the room
  * @param participantNames - Array of participant names
- * @returns The newly created room ID
+ * @param creatorId - User ID of the room creator (optional)
+ * @param isSecured - Whether the room requires a PIN
+ * @returns The newly created room data including ID and PIN if secured
  */
 export async function createRoom(
   roomName: string,
-  participantNames: string[]
-): Promise<string> {
+  participantNames: string[],
+  creatorId?: string,
+  isSecured: boolean = false
+): Promise<{ roomId: string; pin?: string }> {
   // Create a new room reference with auto-generated ID
   const roomsRef = ref(db, 'rooms');
   const newRoomRef = push(roomsRef);
@@ -31,6 +35,9 @@ export async function createRoom(
     availableTargets[participantId] = true;
   });
 
+  // Generate 4-digit PIN if secured
+  const pin = isSecured ? Math.floor(1000 + Math.random() * 9000).toString() : undefined;
+
   // Create the room object
   const room: Omit<Room, 'id'> = {
     name: roomName.trim(),
@@ -39,12 +46,14 @@ export async function createRoom(
     participants,
     availableTargets,
     assignments: {},
+    ...(creatorId && { creatorId }),
+    ...(isSecured && { isSecured, pin }),
   };
 
   // Save to database
   await set(newRoomRef, room);
 
-  return roomId;
+  return { roomId, pin };
 }
 
 /**
@@ -332,4 +341,25 @@ export async function resetRoomAssignments(roomId: string): Promise<void> {
     assignments: {},
     status: 'open',
   });
+}
+
+/**
+ * Verify room PIN
+ *
+ * @param roomId - The room ID
+ * @param pin - The PIN to verify
+ * @returns True if PIN is correct, false otherwise
+ */
+export async function verifyRoomPin(roomId: string, pin: string): Promise<boolean> {
+  const room = await getRoom(roomId);
+  
+  if (!room) {
+    throw new Error('Room not found');
+  }
+
+  if (!room.isSecured || !room.pin) {
+    return true; // Room is not secured
+  }
+
+  return room.pin === pin;
 }

@@ -2,9 +2,12 @@ import Lottie from 'lottie-react';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import HomePage from './pages/HomePage/HomePage';
+import AdminPage from './pages/AdminPage/AdminPage';
+import LandingPage from './pages/LandingPage/LandingPage';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
+import RoomCreatedPage from './pages/RoomCreatedPage/RoomCreatedPage';
 import RoomPage from './pages/RoomPage/RoomPage';
+import RoomPinPage from './pages/RoomPinPage/RoomPinPage';
 
 /**
  * Main App component with routing
@@ -31,7 +34,10 @@ function App() {
       )}
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/room-created/:roomId" element={<RoomCreatedPage />} />
+          <Route path="/room/:roomId/pin" element={<RoomPinPage />} />
           <Route path="/room/:roomId" element={<RoomPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

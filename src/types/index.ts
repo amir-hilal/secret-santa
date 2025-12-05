@@ -23,6 +23,9 @@ export interface Room {
   name: string;
   createdAt: number;
   status: 'open' | 'completed';
+  creatorId?: string; // User ID of the room creator
+  isSecured?: boolean; // Whether the room requires a PIN
+  pin?: string; // 4-digit PIN for secured rooms
   participants: Record<string, Participant>;
   assignments?: Record<string, Assignment>;
   availableTargets?: Record<string, boolean>;
