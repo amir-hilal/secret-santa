@@ -25,6 +25,9 @@ dist-ssr
 
 # Firebase
 .firebase
-.firebaserc
 firebase-debug.log
-firebaseConfig.ts
+
+# Environment variables
+.env
+.env.local
+.env.production
