@@ -296,29 +296,26 @@ export default function RoomPage() {
               )}
             </AnimatePresence>
 
-            <Button
-              onClick={handlePick}
-              disabled={picking}
-              variant="contained"
-              sx={{
-                textTransform: 'none',
-                fontWeight: 'var(--font-weight-semibold)',
-                fontSize: 'var(--font-size-lg)',
-                padding: '1rem 2rem',
-                borderRadius: '8px',
-                backgroundColor: 'var(--primary-color)',
-                color: 'white',
-                '&:hover:not(:disabled)': {
-                  backgroundColor: 'var(--primary-hover)',
-                },
-                '&:disabled': {
+            {!picking && (
+              <Button
+                onClick={handlePick}
+                variant="contained"
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 'var(--font-weight-semibold)',
+                  fontSize: 'var(--font-size-lg)',
+                  padding: '1rem 2rem',
+                  borderRadius: '8px',
                   backgroundColor: 'var(--primary-color)',
-                  opacity: 0.6,
-                },
-              }}
-            >
-              {picking ? 'Picking...' : '🎲 Pick my Secret Santa'}
-            </Button>
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: 'var(--primary-hover)',
+                  },
+                }}
+              >
+                🎲 Pick my Secret Santa
+              </Button>
+            )}
 
             <div className="participant-list">
               <h3>✨ Your Secret Santa could be one of these...</h3>
