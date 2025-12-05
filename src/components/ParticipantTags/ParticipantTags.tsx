@@ -37,13 +37,14 @@ export default function ParticipantTags({
         .map((p) => {
           const hasPicked = !!assignments[p.id];
           const isClickable = selectable && !hasPicked;
+          const isDisabled = selectable && hasPicked;
 
           return (
             <span
               key={p.id}
               className={`participant-tag ${hasPicked ? 'picked' : ''} ${
                 isClickable ? 'selectable' : ''
-              }`}
+              } ${isDisabled ? 'disabled' : ''}`}
               onClick={() => handleClick(p.id, p.name)}
               style={isClickable ? { cursor: 'pointer' } : undefined}
             >

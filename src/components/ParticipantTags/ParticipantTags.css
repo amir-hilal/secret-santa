@@ -31,3 +31,9 @@
   transform: scale(1.05);
   box-shadow: var(--shadow-small);
 }
+
+.participant-tag.disabled {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
