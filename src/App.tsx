@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import AdminPage from './pages/AdminPage/AdminPage';
 import LandingPage from './pages/LandingPage/LandingPage';
+import MyRoomsPage from './pages/MyRoomsPage/MyRoomsPage';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 import RoomCreatedPage from './pages/RoomCreatedPage/RoomCreatedPage';
 import RoomPage from './pages/RoomPage/RoomPage';
@@ -35,6 +36,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/my-rooms" element={<MyRoomsPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/room-created/:roomId" element={<RoomCreatedPage />} />
           <Route path="/room/:roomId/pin" element={<RoomPinPage />} />

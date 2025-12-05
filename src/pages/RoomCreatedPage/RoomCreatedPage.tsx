@@ -91,10 +91,6 @@ export default function RoomCreatedPage() {
   return (
     <div className="page room-created-page">
       <div className="container">
-        <div className="success-header">
-          <h1>🎉 Room Created Successfully!</h1>
-        </div>
-
         <div className="card success-card">
           <h2>📋 Room Details</h2>
 
@@ -113,8 +109,9 @@ export default function RoomCreatedPage() {
                 sx={{
                   textTransform: 'none',
                   fontWeight: 'var(--font-weight-semibold)',
-                  padding: '0.75rem 1.5rem',
+                  padding: '0.75rem 1rem',
                   borderRadius: '8px',
+                  minWidth: '70px',
                   backgroundColor: copiedUrl
                     ? 'var(--primary-color)'
                     : 'var(--primary-color)',
@@ -124,9 +121,29 @@ export default function RoomCreatedPage() {
                   },
                 }}
               >
-                {copiedUrl ? '✓ Copied!' : 'Copy URL'}
+                {copiedUrl ? '✓' : 'Copy'}
+              </Button>
+              <Button
+                onClick={handleViewRoom}
+                variant="outlined"
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 'var(--font-weight-semibold)',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '8px',
+                  borderColor: 'var(--primary-color)',
+                  color: 'var(--primary-color)',
+                  minWidth: 'auto',
+                  '&:hover': {
+                    borderColor: 'var(--primary-hover)',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                  },
+                }}
+              >
+                <span className="material-symbols-outlined">open_in_new</span>
               </Button>
             </div>
+            <p className="pin-note">📤 Share this URL with all participants</p>
           </div>
 
           {pin && (
@@ -140,8 +157,9 @@ export default function RoomCreatedPage() {
                   sx={{
                     textTransform: 'none',
                     fontWeight: 'var(--font-weight-semibold)',
-                    padding: '0.75rem 1.5rem',
+                    padding: '0.75rem 1rem',
                     borderRadius: '8px',
+                    minWidth: '70px',
                     borderColor: 'var(--primary-color)',
                     color: copiedPin ? 'var(--primary-color)' : 'var(--primary-color)',
                     '&:hover': {
@@ -150,7 +168,7 @@ export default function RoomCreatedPage() {
                     },
                   }}
                 >
-                  {copiedPin ? '✓ Copied!' : 'Copy PIN'}
+                  {copiedPin ? '✓' : 'Copy'}
                 </Button>
               </div>
               <p className="pin-note">
@@ -160,19 +178,9 @@ export default function RoomCreatedPage() {
           )}
         </div>
 
-        <div className="info-box">
-          <h3>📤 Next Steps:</h3>
-          <ol>
-            <li>Copy the room URL and share it with participants</li>
-            {pin && <li>Share the 4-digit PIN with participants</li>}
-            <li>Participants will use the link to join and pick their Secret Santa</li>
-            <li>You can manage this room from your admin dashboard</li>
-          </ol>
-        </div>
-
         <div className="action-buttons">
           <Button
-            onClick={handleViewRoom}
+            onClick={() => navigate('/')}
             variant="contained"
             sx={{
               textTransform: 'none',
@@ -187,7 +195,7 @@ export default function RoomCreatedPage() {
               },
             }}
           >
-            View Room
+            Create New Room
           </Button>
           <Button
             onClick={handleManageRooms}

@@ -1,12 +1,10 @@
 import { Button, FormControlLabel, Switch } from '@mui/material';
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  getCurrentUser,
-  signInWithGoogle,
-  subscribeToAuthState,
-} from '../../firebase/authService';
+import { signInWithGoogle, subscribeToAuthState } from '../../firebase/authService';
 import { createRoom } from '../../firebase/roomsService';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { clearUser, setUser } from '../../store/userSlice';
 import './LandingPage.css';
 
 /**
@@ -18,17 +16,29 @@ export default function LandingPage() {
   const [isSecured, setIsSecured] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showLoginOverlay, setShowLoginOverlay] = useState(false);
-  const [currentUser, setCurrentUser] = useState(getCurrentUser());
   const [isCreating, setIsCreating] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector((state) => state.user);
 
   // Subscribe to auth state changes
   useEffect(() => {
     const unsubscribe = subscribeToAuthState((user) => {
-      setCurrentUser(user);
+      if (user) {
+        dispatch(
+          setUser({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+          })
+        );
+      } else {
+        dispatch(clearUser());
+      }
     });
     return () => unsubscribe();
-  }, []);
+  }, [dispatch]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -60,7 +70,7 @@ export default function LandingPage() {
     }
 
     // Check if user is logged in
-    if (!currentUser) {
+    if (!currentUser.uid) {
       setShowLoginOverlay(true);
       return;
     }
@@ -70,7 +80,7 @@ export default function LandingPage() {
   };
 
   const handleCreateRoom = async (name: string, names: string[]) => {
-    if (!currentUser) return;
+    if (!currentUser.uid) return;
 
     setIsCreating(true);
     setError(null);
@@ -203,27 +213,52 @@ export default function LandingPage() {
           </ol>
         </div>
 
-        {currentUser && (
+        {currentUser.uid && (
           <div className="user-info">
             <p>
               Signed in as: <strong>{currentUser.email}</strong>
             </p>
-            <Button
-              onClick={() => navigate('/admin')}
-              variant="outlined"
-              sx={{
-                textTransform: 'none',
-                mt: 1,
-                borderColor: 'var(--primary-color)',
-                color: 'var(--primary-color)',
-                '&:hover': {
-                  borderColor: 'var(--primary-hover)',
-                  backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                },
+            <div
+              style={{
+                display: 'flex',
+                gap: '0.75rem',
+                marginTop: '1rem',
+                flexWrap: 'wrap',
               }}
             >
-              View My Rooms
-            </Button>
+              <Button
+                onClick={() => navigate('/my-rooms')}
+                variant="outlined"
+                sx={{
+                  textTransform: 'none',
+                  borderColor: 'var(--primary-color)',
+                  color: 'var(--primary-color)',
+                  '&:hover': {
+                    borderColor: 'var(--primary-hover)',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                  },
+                }}
+              >
+                View My Rooms
+              </Button>
+              {currentUser.email === 'amir.hilal@hilalpines.com' && (
+                <Button
+                  onClick={() => navigate('/admin')}
+                  variant="outlined"
+                  sx={{
+                    textTransform: 'none',
+                    borderColor: 'var(--secondary-color)',
+                    color: 'var(--secondary-color)',
+                    '&:hover': {
+                      borderColor: 'var(--secondary-color)',
+                      backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                    },
+                  }}
+                >
+                  View as Admin
+                </Button>
+              )}
+            </div>
           </div>
         )}
       </div>

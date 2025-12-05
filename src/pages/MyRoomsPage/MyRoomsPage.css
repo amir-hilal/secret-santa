@@ -1,0 +1,140 @@
+/* My Rooms Page Styles */
+
+.my-rooms-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: var(--font-size-3xl);
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+.page-header .subtitle {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+}
+
+.action-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.rooms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.no-rooms {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 2rem;
+  font-style: italic;
+}
+
+.room-item {
+  background: var(--card-background);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.room-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+}
+
+.room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.room-title-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.room-title-section h3 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+}
+
+.secured-badge {
+  font-size: var(--font-size-sm);
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 193, 7, 0.2);
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  border-radius: 4px;
+  color: var(--warning-color);
+}
+
+.room-header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.room-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.room-date,
+.room-progress {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.room-participants {
+  margin-top: 0.5rem;
+}
+
+.room-participants strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .room-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .room-header-actions {
+    width: 100%;
+  }
+
+  .room-header-actions button {
+    flex: 1;
+  }
+
+  .room-title-section {
+    flex-wrap: wrap;
+  }
+}

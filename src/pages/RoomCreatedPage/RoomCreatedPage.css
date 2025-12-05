@@ -66,7 +66,7 @@
 
 .detail-value-with-copy {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem;
   align-items: center;
 }
 
@@ -96,7 +96,7 @@
 
 .pin-display {
   flex: 1;
-  padding: 1rem;
+  padding: 0.053rem 1rem;
   border: 2px dashed var(--primary-color);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.05);
@@ -106,6 +106,9 @@
   text-align: center;
   letter-spacing: 0.5rem;
   font-family: 'Courier New', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pin-note {
@@ -151,11 +154,6 @@
 @media (max-width: 768px) {
   .success-header h1 {
     font-size: var(--font-size-2xl);
-  }
-
-  .detail-value-with-copy {
-    flex-direction: column;
-    align-items: stretch;
   }
 
   .url-input {
