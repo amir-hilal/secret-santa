@@ -95,7 +95,9 @@ export default function LandingPage() {
     } catch (err: any) {
       console.error('Error creating room:', err);
       if (err.message?.includes('Room limit reached')) {
-        setError('Room limit reached. You can create a maximum of 10 rooms. Please delete some rooms before creating new ones.');
+        setError(
+          'Room limit reached. You can create a maximum of 10 rooms. Please delete some rooms before creating new ones.'
+        );
       } else {
         setError('Failed to create room. Please try again.');
       }
