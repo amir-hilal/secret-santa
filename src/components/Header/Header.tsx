@@ -46,10 +46,13 @@ export default function Header() {
     <header className="app-header">
       <div className="header-content">
         <div className="header-logo" onClick={handleHome}>
-          🎅 Secret Santa
+          <img src="/santa-hat.png" alt="Secret Santa" />
         </div>
         {currentUser.uid && (
           <div className="header-profile">
+            <div className="my-rooms-link" onClick={handleMyRooms}>
+              View My Rooms
+            </div>
             <div className="profile-avatar" onClick={handleClick}>
               {currentUser.photoURL ? (
                 <img src={currentUser.photoURL} alt={currentUser.displayName || 'User'} />
@@ -86,17 +89,6 @@ export default function Header() {
               <div className="menu-header">
                 <div className="menu-user-email">{currentUser.email}</div>
               </div>
-              <MenuItem
-                onClick={handleMyRooms}
-                sx={{
-                  color: 'var(--text-primary)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                  },
-                }}
-              >
-                View My Rooms
-              </MenuItem>
               {currentUser.email === 'amir.hilal@hilalpines.com' && (
                 <MenuItem
                   onClick={handleAdmin}

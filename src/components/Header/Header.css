@@ -22,11 +22,20 @@
 }
 
 .header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   color: var(--primary-color);
   cursor: pointer;
   transition: opacity 0.3s ease;
+}
+
+.header-logo img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
 
 .header-logo:hover {
@@ -36,6 +45,19 @@
 .header-profile {
   display: flex;
   align-items: center;
+  gap: 1.5rem;
+}
+
+.my-rooms-link {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.my-rooms-link:hover {
+  color: var(--primary-color);
 }
 
 .profile-avatar {

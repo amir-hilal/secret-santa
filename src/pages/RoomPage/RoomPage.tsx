@@ -256,8 +256,6 @@ export default function RoomPage() {
                   participants={Object.fromEntries(
                     Object.entries(room.participants).filter(([id]) => {
                       if (id === localParticipantId) return false; // Exclude yourself
-                      if (room.availableTargets && !room.availableTargets[id])
-                        return false; // Exclude already picked
                       return true;
                     })
                   )}

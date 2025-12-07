@@ -123,8 +123,7 @@ export default function LandingPage() {
     <div className="page landing-page">
       <div className="container">
         <div className="landing-header">
-          <h1>🎅 Secret Santa Generator</h1>
-          <p className="subtitle">Create your Secret Santa event in seconds!</p>
+          <h1>Secret Santa Generator 🎅</h1>
         </div>
 
         <div className="card landing-card">
