@@ -99,6 +99,7 @@ export default function RoomCreatedPage() {
                   padding: '0.75rem 1rem',
                   borderRadius: '8px',
                   minWidth: '70px',
+                  maxHeight: '48px',
                   backgroundColor: copiedUrl
                     ? 'var(--primary-color)'
                     : 'var(--primary-color)',
@@ -108,7 +109,11 @@ export default function RoomCreatedPage() {
                   },
                 }}
               >
-                {copiedUrl ? '✓' : 'Copy'}
+                {copiedUrl ? (
+                  '✓'
+                ) : (
+                  <span className="material-symbols-outlined">content_copy</span>
+                )}
               </Button>
               <Button
                 onClick={handleViewRoom}
@@ -121,6 +126,7 @@ export default function RoomCreatedPage() {
                   borderColor: 'var(--primary-color)',
                   color: 'var(--primary-color)',
                   minWidth: 'auto',
+                  maxHeight: '48px',
                   '&:hover': {
                     borderColor: 'var(--primary-hover)',
                     backgroundColor: 'rgba(40, 167, 69, 0.1)',
@@ -147,6 +153,7 @@ export default function RoomCreatedPage() {
                     padding: '0.75rem 1rem',
                     borderRadius: '8px',
                     minWidth: '70px',
+                    maxHeight: '48px',
                     borderColor: 'var(--primary-color)',
                     color: copiedPin ? 'var(--primary-color)' : 'var(--primary-color)',
                     '&:hover': {
@@ -155,7 +162,11 @@ export default function RoomCreatedPage() {
                     },
                   }}
                 >
-                  {copiedPin ? '✓' : 'Copy'}
+                  {copiedPin ? (
+                    '✓'
+                  ) : (
+                    <span className="material-symbols-outlined">content_copy</span>
+                  )}
                 </Button>
               </div>
               <p className="pin-note">
