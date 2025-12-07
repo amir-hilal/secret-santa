@@ -19,7 +19,7 @@ import { showLoginOverlay } from './store/userSlice';
 function AppContent() {
   const location = useLocation();
   const dispatch = useAppDispatch();
-  
+
   const handleSignInClick = () => {
     if (location.pathname === '/') {
       dispatch(showLoginOverlay());

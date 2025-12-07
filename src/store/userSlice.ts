@@ -48,5 +48,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, showLoginOverlay, hideLoginOverlay } = userSlice.actions;
+export const { setUser, clearUser, showLoginOverlay, hideLoginOverlay } =
+  userSlice.actions;
 export default userSlice.reducer;
