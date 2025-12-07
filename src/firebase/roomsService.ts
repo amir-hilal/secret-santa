@@ -3,6 +3,28 @@ import { Assignment, Participant, Room } from '../types';
 import { db } from './firebase';
 
 /**
+ * Count rooms created by a specific user
+ *
+ * @param userId - The creator's user ID
+ * @returns The number of rooms created by the user
+ */
+export async function countUserRooms(userId: string): Promise<number> {
+  const roomsRef = ref(db, 'rooms');
+  const snapshot = await get(roomsRef);
+
+  if (!snapshot.exists()) {
+    return 0;
+  }
+
+  const roomsData = snapshot.val();
+  const userRooms = Object.values(roomsData).filter(
+    (room: any) => room.creatorId === userId
+  );
+
+  return userRooms.length;
+}
+
+/**
  * Create a new Secret Santa room with the given participant names
  *
  * @param roomName - The name of the room
@@ -17,6 +39,14 @@ export async function createRoom(
   creatorId?: string,
   isSecured: boolean = false
 ): Promise<{ roomId: string; pin?: string }> {
+  // Check room limit if user is authenticated
+  if (creatorId) {
+    const roomCount = await countUserRooms(creatorId);
+    if (roomCount >= 10) {
+      throw new Error('Room limit reached. You can create a maximum of 10 rooms.');
+    }
+  }
+
   // Create a new room reference with auto-generated ID
   const roomsRef = ref(db, 'rooms');
   const newRoomRef = push(roomsRef);

@@ -92,9 +92,13 @@ export default function LandingPage() {
       navigate(`/room-created/${roomId}`, {
         state: { roomName: name, pin, isSecured },
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error creating room:', err);
-      setError('Failed to create room. Please try again.');
+      if (err.message?.includes('Room limit reached')) {
+        setError('Room limit reached. You can create a maximum of 10 rooms. Please delete some rooms before creating new ones.');
+      } else {
+        setError('Failed to create room. Please try again.');
+      }
     } finally {
       setIsCreating(false);
     }
