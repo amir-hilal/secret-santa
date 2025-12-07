@@ -31,7 +31,7 @@
 
         "assignments": {
           "$participantId": {
-            ".write": "!data.exists() || data.parent().parent().child('creatorId').val() === auth.uid || auth.token.email === 'amir.hilal@hilalpines.com'",
+            ".write": true,
             ".validate": "newData.hasChildren(['participantId', 'targetId', 'assignedAt'])"
           }
         },
