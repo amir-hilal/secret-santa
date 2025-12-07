@@ -64,18 +64,8 @@ export default function RoomCreatedPage() {
     navigate(`/room/${roomId}`);
   };
 
-  const handleManageRooms = () => {
-    navigate('/admin');
-  };
-
   if (loading) {
-    return (
-      <div className="page room-created-page">
-        <div className="container">
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   if (!roomId) {
