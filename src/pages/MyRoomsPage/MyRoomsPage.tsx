@@ -6,7 +6,7 @@ import RoomsList from '../../components/RoomsList/RoomsList';
 import {
   deleteRoom,
   resetRoomAssignments,
-  subscribeToAllRooms,
+  subscribeToUserRooms,
   updateRoomName,
   updateRoomParticipants,
 } from '../../firebase/roomsService';
@@ -40,21 +40,14 @@ export default function MyRoomsPage() {
   }>({ open: false, roomId: '', roomName: '' });
   const navigate = useNavigate();
 
-  // Subscribe to all rooms and filter by creator
+  // Subscribe to user's rooms only
   useEffect(() => {
-    if (!currentUser.uid) {
-      navigate('/');
-      return;
-    }
-
-    const unsubscribe = subscribeToAllRooms((updatedRooms) => {
-      // Filter rooms created by current user
-      const userRooms = updatedRooms.filter((room) => room.creatorId === currentUser.uid);
-      setRooms(userRooms);
-    });
+    if (!currentUser.uid) return;
+    
+    const unsubscribe = subscribeToUserRooms(currentUser.uid, setRooms);
 
     return () => unsubscribe();
-  }, [currentUser.uid, navigate]);
+  }, [currentUser.uid]);
 
   const handleCopyRoomLink = (roomId: string) => {
     const url = `${window.location.origin}/room/${roomId}`;

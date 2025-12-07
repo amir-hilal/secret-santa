@@ -252,6 +252,42 @@ export function subscribeToAllRooms(callback: (rooms: Room[]) => void): () => vo
 }
 
 /**
+ * Subscribe to rooms created by a specific user
+ *
+ * @param userId - The creator's user ID
+ * @param callback - Function called with updated rooms data
+ * @returns Unsubscribe function to stop listening
+ */
+export function subscribeToUserRooms(
+  userId: string,
+  callback: (rooms: Room[]) => void
+): () => void {
+  const roomsRef = ref(db, 'rooms');
+
+  const unsubscribe = onValue(roomsRef, (snapshot) => {
+    if (!snapshot.exists()) {
+      callback([]);
+      return;
+    }
+
+    const roomsData = snapshot.val();
+    const rooms: Room[] = Object.keys(roomsData)
+      .map((roomId) => ({
+        id: roomId,
+        ...roomsData[roomId],
+      }))
+      .filter((room) => room.creatorId === userId);
+
+    // Sort by creation date (newest first)
+    rooms.sort((a, b) => b.createdAt - a.createdAt);
+
+    callback(rooms);
+  });
+
+  return unsubscribe;
+}
+
+/**
  * Delete a room by ID
  *
  * @param roomId - The room ID to delete
