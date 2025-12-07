@@ -1,8 +1,15 @@
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ParticipantTags from '../../components/ParticipantTags/ParticipantTags';
-import { subscribeToAllRooms } from '../../firebase/roomsService';
+import GlassDialog from '../../components/GlassDialog/GlassDialog';
+import RoomsList from '../../components/RoomsList/RoomsList';
+import {
+  deleteRoom,
+  resetRoomAssignments,
+  subscribeToAllRooms,
+  updateRoomName,
+  updateRoomParticipants,
+} from '../../firebase/roomsService';
 import { useAppSelector } from '../../store/hooks';
 import { Room } from '../../types';
 import './MyRoomsPage.css';
@@ -15,6 +22,22 @@ export default function MyRoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [copiedRoomId, setCopiedRoomId] = useState<string | null>(null);
   const [copiedPinRoomId, setCopiedPinRoomId] = useState<string | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    roomId: string;
+    roomName: string;
+  }>({ open: false, roomId: '', roomName: '' });
+  const [editDialog, setEditDialog] = useState<{
+    open: boolean;
+    roomId: string;
+    roomName: string;
+    participants: string;
+  }>({ open: false, roomId: '', roomName: '', participants: '' });
+  const [resetDialog, setResetDialog] = useState<{
+    open: boolean;
+    roomId: string;
+    roomName: string;
+  }>({ open: false, roomId: '', roomName: '' });
   const navigate = useNavigate();
 
   // Subscribe to all rooms and filter by creator
@@ -46,8 +69,77 @@ export default function MyRoomsPage() {
     setTimeout(() => setCopiedPinRoomId(null), 2000);
   };
 
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString();
+  const handleDeleteRoom = (roomId: string, roomName: string) => {
+    setDeleteDialog({ open: true, roomId, roomName });
+  };
+
+  const confirmDelete = async () => {
+    const { roomId } = deleteDialog;
+    setDeleteDialog({ open: false, roomId: '', roomName: '' });
+
+    try {
+      await deleteRoom(roomId);
+    } catch (err) {
+      console.error('Error deleting room:', err);
+    }
+  };
+
+  const handleEditRoom = (room: Room) => {
+    const participantsList = Object.values(room.participants)
+      .map((p) => p.name)
+      .join('\n');
+    setEditDialog({
+      open: true,
+      roomId: room.id,
+      roomName: room.name,
+      participants: participantsList,
+    });
+  };
+
+  const confirmEdit = async () => {
+    const { roomId, roomName, participants } = editDialog;
+
+    if (!roomName.trim()) {
+      return;
+    }
+
+    const names = participants
+      .split('\n')
+      .map((name) => name.trim())
+      .filter((name) => name.length > 0);
+
+    if (names.length < 2) {
+      return;
+    }
+
+    const uniqueNames = new Set(names.map((n) => n.toLowerCase()));
+    if (uniqueNames.size !== names.length) {
+      return;
+    }
+
+    setEditDialog({ open: false, roomId: '', roomName: '', participants: '' });
+
+    try {
+      await updateRoomName(roomId, roomName);
+      await updateRoomParticipants(roomId, names);
+    } catch (err) {
+      console.error('Error updating room:', err);
+    }
+  };
+
+  const handleResetRoom = (roomId: string, roomName: string) => {
+    setResetDialog({ open: true, roomId, roomName });
+  };
+
+  const confirmReset = async () => {
+    const { roomId } = resetDialog;
+    setResetDialog({ open: false, roomId: '', roomName: '' });
+
+    try {
+      await resetRoomAssignments(roomId);
+    } catch (err) {
+      console.error('Error resetting room:', err);
+    }
   };
 
   return (
@@ -67,7 +159,7 @@ export default function MyRoomsPage() {
             sx={{
               textTransform: 'none',
               fontWeight: 'var(--font-weight-semibold)',
-              padding: '0.75rem 2rem',
+              padding: '0.75rem 1rem',
               borderRadius: '8px',
               backgroundColor: 'var(--primary-color)',
               color: 'white',
@@ -77,100 +169,74 @@ export default function MyRoomsPage() {
             }}
           >
             Create New Room
+            <span className="material-symbols-outlined" style={{ marginLeft: '.5rem' }}>
+              add
+            </span>
           </Button>
         </div>
 
         <div className="card">
           <h2>Your Rooms ({rooms.length})</h2>
-          <div className="rooms-list">
-            {rooms.length === 0 ? (
-              <p className="no-rooms">
-                You haven't created any rooms yet. Click "Create New Room" to get started!
-              </p>
-            ) : (
-              rooms.map((room) => {
-                const totalParticipants = Object.keys(room.participants).length;
-                const assignedCount = room.assignments
-                  ? Object.keys(room.assignments).length
-                  : 0;
-
-                return (
-                  <div
-                    key={room.id}
-                    className="room-item"
-                    onClick={() => navigate(`/room/${room.id}`)}
-                  >
-                    <div className="room-header">
-                      <div className="room-title-section">
-                        <h3>{room.name}</h3>
-                        {room.isSecured && (
-                          <span className="secured-badge">🔒 Secured</span>
-                        )}
-                      </div>
-                      <div className="room-header-actions">
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCopyRoomLink(room.id);
-                          }}
-                          sx={{
-                            textTransform: 'none',
-                            borderColor: 'var(--primary-color)',
-                            color: 'var(--primary-color)',
-                            '&:hover': {
-                              borderColor: 'var(--primary-hover)',
-                              backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                            },
-                          }}
-                        >
-                          {copiedRoomId === room.id ? '✓ Copied' : 'Copy Link'}
-                        </Button>
-                        {room.isSecured && room.pin && (
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCopyPin(room.id, room.pin!);
-                            }}
-                            sx={{
-                              textTransform: 'none',
-                              borderColor: 'var(--warning-color)',
-                              color: 'var(--warning-color)',
-                              '&:hover': {
-                                borderColor: 'var(--warning-color)',
-                                backgroundColor: 'rgba(255, 193, 7, 0.1)',
-                              },
-                            }}
-                          >
-                            {copiedPinRoomId === room.id ? '✓ Copied' : 'Copy PIN'}
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="room-details">
-                      <p className="room-date">Created: {formatDate(room.createdAt)}</p>
-                      <p className="room-progress">
-                        Progress: {assignedCount} / {totalParticipants} assigned
-                      </p>
-                      <div className="room-participants">
-                        <strong>Participants:</strong>
-                        <ParticipantTags
-                          participants={room.participants}
-                          assignments={room.assignments}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
+          <RoomsList
+            rooms={rooms}
+            copiedRoomId={copiedRoomId}
+            copiedPinRoomId={copiedPinRoomId}
+            onCopyRoomLink={handleCopyRoomLink}
+            onCopyPin={handleCopyPin}
+            onDeleteRoom={handleDeleteRoom}
+            onEditRoom={handleEditRoom}
+            onResetRoom={handleResetRoom}
+            showActions={true}
+          />
         </div>
       </div>
+
+      <GlassDialog
+        open={deleteDialog.open}
+        onClose={() => setDeleteDialog({ open: false, roomId: '', roomName: '' })}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+        dialogData={{
+          type: 'delete-room',
+          roomName: deleteDialog.roomName,
+          onConfirm: confirmDelete,
+          onCancel: () => setDeleteDialog({ open: false, roomId: '', roomName: '' }),
+        }}
+      />
+
+      <GlassDialog
+        open={editDialog.open}
+        onClose={() =>
+          setEditDialog({ open: false, roomId: '', roomName: '', participants: '' })
+        }
+        aria-labelledby="edit-dialog-title"
+        maxWidth="sm"
+        fullWidth
+        dialogData={{
+          type: 'edit-room',
+          roomName: editDialog.roomName,
+          participants: editDialog.participants,
+          onRoomNameChange: (name) => setEditDialog({ ...editDialog, roomName: name }),
+          onParticipantsChange: (participants) =>
+            setEditDialog({ ...editDialog, participants }),
+          onConfirm: confirmEdit,
+          onCancel: () =>
+            setEditDialog({ open: false, roomId: '', roomName: '', participants: '' }),
+        }}
+      />
+
+      <GlassDialog
+        open={resetDialog.open}
+        onClose={() => setResetDialog({ open: false, roomId: '', roomName: '' })}
+        aria-labelledby="reset-dialog-title"
+        aria-describedby="reset-dialog-description"
+        dialogData={{
+          type: 'reset-room',
+          roomName: resetDialog.roomName,
+          onConfirm: confirmReset,
+          onCancel: () => setResetDialog({ open: false, roomId: '', roomName: '' }),
+        }}
+      />
     </div>
   );
 }
