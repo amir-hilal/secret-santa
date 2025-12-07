@@ -124,6 +124,15 @@
     font-size: var(--font-size-lg);
   }
 
+  .header-logo img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .my-rooms-link {
+    font-size: var(--font-size-sm);
+  }
+
   .profile-avatar {
     width: 36px;
     height: 36px;

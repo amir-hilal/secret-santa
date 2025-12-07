@@ -122,6 +122,7 @@ export default function Header({ onSignInClick }: { onSignInClick?: () => void }
           <Button
             onClick={onSignInClick}
             variant="contained"
+            className="sign-in-button"
             sx={{
               textTransform: 'none',
               fontWeight: 'var(--font-weight-semibold)',
@@ -132,6 +133,10 @@ export default function Header({ onSignInClick }: { onSignInClick?: () => void }
               color: 'white',
               '&:hover': {
                 backgroundColor: 'var(--primary-hover)',
+              },
+              '@media (max-width: 768px)': {
+                fontSize: 'var(--font-size-sm)',
+                padding: '0.25rem 0.75rem',
               },
             }}
           >

@@ -188,7 +188,7 @@ export default function LandingPage() {
                 textTransform: 'none',
                 fontWeight: 'var(--font-weight-semibold)',
                 fontSize: 'var(--font-size-lg)',
-                padding: '1rem 2rem',
+                padding: '.41rem 2rem',
                 borderRadius: '8px',
                 backgroundColor: 'var(--primary-color)',
                 color: 'white',
