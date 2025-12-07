@@ -104,18 +104,60 @@ export default function RoomPage() {
       })
       .map(([, participant]) => participant.name);
 
-    // Shuffle animation for 5 seconds
-    const shuffleInterval = setInterval(() => {
-      const randomName =
-        availableParticipants[Math.floor(Math.random() * availableParticipants.length)];
-      setShuffledName(randomName);
-    }, 300); // Change name every 800ms to match animation duration
+    // Determine animation duration based on number of available participants
+    let animationDuration: number;
+    if (availableParticipants.length === 1) {
+      animationDuration = 0; // No animation, show immediately
+    } else if (availableParticipants.length === 2) {
+      animationDuration = 1000; // 1 second
+    } else if (availableParticipants.length === 3) {
+      animationDuration = 1500; // 1.5 seconds
+    } else {
+      animationDuration = 5000; // 5 seconds for 4+ participants
+    }
 
-    // After 5 seconds, make the actual assignment
-    setTimeout(async () => {
-      clearInterval(shuffleInterval);
+    if (animationDuration > 0) {
+      // Shuffle animation
+      const shuffleInterval = setInterval(() => {
+        const randomName =
+          availableParticipants[Math.floor(Math.random() * availableParticipants.length)];
+        setShuffledName(randomName);
+      }, 300);
+
+      // After animation duration, make the actual assignment
+      setTimeout(async () => {
+        clearInterval(shuffleInterval);
+        setShuffling(false);
+
+        try {
+          await assignSecretSanta(roomId, localParticipantId);
+
+          // The room will update via the subscription, triggering a re-render
+          // Update localStorage with target name once we have it
+          if (room) {
+            const targetName = getTargetName(room, localParticipantId);
+            if (targetName && localParticipantName) {
+              setLocalParticipant(roomId, {
+                participantId: localParticipantId,
+                name: localParticipantName,
+                targetName,
+              });
+            }
+          }
+        } catch (err) {
+          console.error('Error picking Secret Santa:', err);
+          setPickError(
+            err instanceof Error
+              ? err.message
+              : 'Failed to pick Secret Santa. Please try again.'
+          );
+        } finally {
+          setPicking(false);
+        }
+      }, animationDuration);
+    } else {
+      // No animation, assign immediately
       setShuffling(false);
-
       try {
         await assignSecretSanta(roomId, localParticipantId);
 
@@ -141,7 +183,7 @@ export default function RoomPage() {
       } finally {
         setPicking(false);
       }
-    }, 5000);
+    }
   };
 
   // Loading state
