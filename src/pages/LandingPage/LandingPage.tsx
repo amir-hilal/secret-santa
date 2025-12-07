@@ -1,5 +1,5 @@
 import { Button, FormControlLabel, Switch } from '@mui/material';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithGoogle, subscribeToAuthState } from '../../firebase/authService';
 import { createRoom } from '../../firebase/roomsService';
@@ -21,6 +21,7 @@ export default function LandingPage() {
   const [isSecured, setIsSecured] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const pendingRoomCreation = useRef(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.user);
@@ -44,6 +45,20 @@ export default function LandingPage() {
     });
     return () => unsubscribe();
   }, [dispatch]);
+
+  // Auto-create room after login if pending
+  useEffect(() => {
+    if (currentUser.uid && pendingRoomCreation.current) {
+      pendingRoomCreation.current = false;
+
+      const names = participantNames
+        .split('\n')
+        .map((name) => name.trim())
+        .filter((name) => name.length > 0);
+
+      handleCreateRoom(roomName.trim(), names);
+    }
+  }, [currentUser.uid]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -76,6 +91,7 @@ export default function LandingPage() {
 
     // Check if user is logged in
     if (!currentUser.uid) {
+      pendingRoomCreation.current = true;
       dispatch(showLoginOverlayAction());
       return;
     }
@@ -109,18 +125,12 @@ export default function LandingPage() {
     try {
       await signInWithGoogle();
       dispatch(hideLoginOverlay());
-
-      // After login, create the room with the stored data
-      const names = participantNames
-        .split('\n')
-        .map((name) => name.trim())
-        .filter((name) => name.length > 0);
-
-      await handleCreateRoom(roomName.trim(), names);
+      // Room creation will be triggered by useEffect when currentUser.uid is set
     } catch (err) {
       console.error('Error signing in:', err);
       setError('Failed to sign in with Google. Please try again.');
       dispatch(hideLoginOverlay());
+      pendingRoomCreation.current = false;
     }
   };
 

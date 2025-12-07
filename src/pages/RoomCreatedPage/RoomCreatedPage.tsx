@@ -91,14 +91,11 @@ export default function RoomCreatedPage() {
   return (
     <div className="page room-created-page">
       <div className="container">
+        <div className="details-header">
+          <h1>🎉 {roomName}</h1>
+        </div>
+
         <div className="card success-card">
-          <h2>📋 Room Details</h2>
-
-          <div className="room-detail-item">
-            <label>Room Name:</label>
-            <div className="detail-value">{roomName}</div>
-          </div>
-
           <div className="room-detail-item">
             <label>Room URL:</label>
             <div className="detail-value-with-copy">
@@ -186,7 +183,7 @@ export default function RoomCreatedPage() {
               textTransform: 'none',
               fontWeight: 'var(--font-weight-semibold)',
               fontSize: 'var(--font-size-base)',
-              padding: '0.75rem 2rem',
+              padding: '0.75rem 1rem',
               borderRadius: '8px',
               backgroundColor: 'var(--primary-color)',
               color: 'white',
@@ -196,25 +193,9 @@ export default function RoomCreatedPage() {
             }}
           >
             Create New Room
-          </Button>
-          <Button
-            onClick={handleManageRooms}
-            variant="outlined"
-            sx={{
-              textTransform: 'none',
-              fontWeight: 'var(--font-weight-semibold)',
-              fontSize: 'var(--font-size-base)',
-              padding: '0.75rem 2rem',
-              borderRadius: '8px',
-              borderColor: 'var(--primary-color)',
-              color: 'var(--primary-color)',
-              '&:hover': {
-                borderColor: 'var(--primary-hover)',
-                backgroundColor: 'rgba(40, 167, 69, 0.1)',
-              },
-            }}
-          >
-            Manage All Rooms
+            <span className="material-symbols-outlined" style={{ marginLeft: '.5rem' }}>
+              add
+            </span>
           </Button>
         </div>
       </div>

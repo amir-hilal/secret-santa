@@ -5,6 +5,10 @@
   margin: 0 auto;
 }
 
+.details-header {
+  margin-bottom: 2rem;
+}
+
 .success-header {
   text-align: center;
   margin-bottom: 2rem;
