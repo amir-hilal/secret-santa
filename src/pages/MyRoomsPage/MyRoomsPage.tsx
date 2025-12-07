@@ -43,7 +43,7 @@ export default function MyRoomsPage() {
   // Subscribe to user's rooms only
   useEffect(() => {
     if (!currentUser.uid) return;
-    
+
     const unsubscribe = subscribeToUserRooms(currentUser.uid, setRooms);
 
     return () => unsubscribe();

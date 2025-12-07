@@ -21,11 +21,11 @@ import { clearUser, setUser, showLoginOverlay } from './store/userSlice';
  */
 function ProtectedRoute({ children }: { children: ReactElement }) {
   const currentUser = useAppSelector((state) => state.user);
-  
+
   if (!currentUser.uid) {
     return <Navigate to="/" replace />;
   }
-  
+
   return children;
 }
 
@@ -62,30 +62,43 @@ function AppContent() {
     }
   };
 
-  // Show loading screen while auth initializes
-  if (isAuthLoading) {
-    return (
-      <>
-        <Header onSignInClick={handleSignInClick} />
-        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 80px)' }}>
-          <LoadingAnimation animationData={ChristmasSleighAnimation} width={300} height={300} />
-        </div>
-      </>
-    );
-  }
-
   return (
     <>
       <Header onSignInClick={handleSignInClick} />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/my-rooms" element={<ProtectedRoute><MyRoomsPage /></ProtectedRoute>} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/room-created/:roomId" element={<RoomCreatedPage />} />
-        <Route path="/room/:roomId/pin" element={<RoomPinPage />} />
-        <Route path="/room/:roomId" element={<RoomPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      {isAuthLoading ? (
+        <div
+          className="page"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: 'calc(100vh - 80px)',
+          }}
+        >
+          <LoadingAnimation
+            animationData={ChristmasSleighAnimation}
+            width={300}
+            height={300}
+          />
+        </div>
+      ) : (
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/my-rooms"
+            element={
+              <ProtectedRoute>
+                <MyRoomsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/room-created/:roomId" element={<RoomCreatedPage />} />
+          <Route path="/room/:roomId/pin" element={<RoomPinPage />} />
+          <Route path="/room/:roomId" element={<RoomPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      )}
     </>
   );
 }

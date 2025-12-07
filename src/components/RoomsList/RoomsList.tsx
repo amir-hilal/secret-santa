@@ -72,7 +72,6 @@ export default function RoomsList({
                       e.stopPropagation();
                       onCopyRoomLink(room.id);
                     }}
-                    title="Copy link"
                     sx={{
                       borderRadius: '50%',
                       minWidth: 'auto',
@@ -143,7 +142,6 @@ export default function RoomsList({
                       e.stopPropagation();
                       onResetRoom(room.id, room.name);
                     }}
-                    title="Reset assignments"
                     sx={{
                       borderRadius: '50%',
                       minWidth: 'auto',
@@ -175,7 +173,6 @@ export default function RoomsList({
                       e.stopPropagation();
                       onEditRoom(room);
                     }}
-                    title="Edit room"
                     sx={{
                       borderRadius: '50%',
                       minWidth: 'auto',
@@ -207,7 +204,6 @@ export default function RoomsList({
                       e.stopPropagation();
                       onDeleteRoom(room.id, room.name);
                     }}
-                    title="Delete room"
                     sx={{
                       borderRadius: '50%',
                       minWidth: 'auto',

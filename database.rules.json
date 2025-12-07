@@ -1,9 +1,9 @@
 {
   "rules": {
     "rooms": {
-      "$roomId": {
-        ".read": true,
+      ".read": true,
 
+      "$roomId": {
         ".write": "(!data.exists() && auth != null) || (data.exists() && (data.child('creatorId').val() === auth.uid || auth.token.email === 'amir.hilal@hilalpines.com'))",
 
         "name": {
