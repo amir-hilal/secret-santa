@@ -1,4 +1,4 @@
-import { Menu, MenuItem } from '@mui/material';
+import { Button, Menu, MenuItem } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOutUser } from '../../firebase/authService';
@@ -8,7 +8,7 @@ import './Header.css';
 /**
  * Header - Navigation header with profile dropdown
  */
-export default function Header() {
+export default function Header({ onSignInClick }: { onSignInClick?: () => void }) {
   const currentUser = useAppSelector((state) => state.user);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export default function Header() {
         <div className="header-logo" onClick={handleHome}>
           <img src="/santa-hat.png" alt="Secret Santa" />
         </div>
-        {currentUser.uid && (
+        {currentUser.uid ? (
           <div className="header-profile">
             <div className="my-rooms-link" onClick={handleMyRooms}>
               View My Rooms
@@ -118,6 +118,25 @@ export default function Header() {
               </MenuItem>
             </Menu>
           </div>
+        ) : (
+          <Button
+            onClick={onSignInClick}
+            variant="contained"
+            sx={{
+              textTransform: 'none',
+              fontWeight: 'var(--font-weight-semibold)',
+              fontSize: 'var(--font-size-md)',
+              padding: '0.25rem 1rem',
+              borderRadius: '8px',
+              backgroundColor: 'var(--primary-color)',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'var(--primary-hover)',
+              },
+            }}
+          >
+            Sign In
+          </Button>
         )}
       </div>
     </header>

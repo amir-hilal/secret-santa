@@ -4,7 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { signInWithGoogle, subscribeToAuthState } from '../../firebase/authService';
 import { createRoom } from '../../firebase/roomsService';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { clearUser, setUser } from '../../store/userSlice';
+import {
+  clearUser,
+  hideLoginOverlay,
+  setUser,
+  showLoginOverlay as showLoginOverlayAction,
+} from '../../store/userSlice';
 import './LandingPage.css';
 
 /**
@@ -15,11 +20,11 @@ export default function LandingPage() {
   const [participantNames, setParticipantNames] = useState('');
   const [isSecured, setIsSecured] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showLoginOverlay, setShowLoginOverlay] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.user);
+  const showLoginOverlay = useAppSelector((state) => state.user.showLoginOverlay);
 
   // Subscribe to auth state changes
   useEffect(() => {
@@ -71,7 +76,7 @@ export default function LandingPage() {
 
     // Check if user is logged in
     if (!currentUser.uid) {
-      setShowLoginOverlay(true);
+      dispatch(showLoginOverlayAction());
       return;
     }
 
@@ -103,7 +108,7 @@ export default function LandingPage() {
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle();
-      setShowLoginOverlay(false);
+      dispatch(hideLoginOverlay());
 
       // After login, create the room with the stored data
       const names = participantNames
@@ -115,7 +120,7 @@ export default function LandingPage() {
     } catch (err) {
       console.error('Error signing in:', err);
       setError('Failed to sign in with Google. Please try again.');
-      setShowLoginOverlay(false);
+      dispatch(hideLoginOverlay());
     }
   };
 
@@ -284,7 +289,7 @@ export default function LandingPage() {
                 </Button>
 
                 <Button
-                  onClick={() => setShowLoginOverlay(false)}
+                  onClick={() => dispatch(hideLoginOverlay())}
                   fullWidth
                   sx={{
                     textTransform: 'none',
