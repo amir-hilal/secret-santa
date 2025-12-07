@@ -1,0 +1,118 @@
+/* Room PIN Page Styles */
+
+.room-pin-page {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.pin-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.pin-header h1 {
+  font-size: var(--font-size-3xl);
+  margin-bottom: 0.5rem;
+}
+
+.pin-header .subtitle {
+  font-size: var(--font-size-xl);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.pin-card {
+  text-align: center;
+}
+
+.pin-card h2 {
+  margin-bottom: 0.5rem;
+}
+
+.pin-instruction {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.pin-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pin-inputs {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.pin-input {
+  width: 60px;
+  height: 70px;
+  text-align: center;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--primary-color);
+  transition: all 0.2s ease;
+  font-family: 'Courier New', monospace;
+}
+
+.pin-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+  transform: scale(1.05);
+}
+
+.pin-input:not(:placeholder-shown) {
+  border-color: var(--primary-color);
+  background: rgba(40, 167, 69, 0.1);
+}
+
+.pin-help {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.pin-help p {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pin-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .pin-inputs {
+    gap: 0.5rem;
+  }
+
+  .pin-input {
+    width: 50px;
+    height: 60px;
+    font-size: var(--font-size-2xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .pin-inputs {
+    gap: 0.5rem;
+  }
+
+  .pin-input {
+    width: 45px;
+    height: 55px;
+    font-size: var(--font-size-xl);
+  }
+}

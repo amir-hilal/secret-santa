@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "secret-santa-26daa"
+  },
+  "targets": {
+    "secret-santa-26daa": {
+      "hosting": {
+        "staging": [
+          "secret-santa-26daa"
+        ],
+        "production": [
+          "secret-santa-pick"
+        ]
+      }
+    }
   }
 }

@@ -1,0 +1,42 @@
+/* Admin Page Styles */
+.admin-page .container {
+  max-width: 1400px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.admin-column {
+  min-width: 0; /* Prevents grid blowout */
+}
+
+.admin-column .card {
+  height: 100%;
+}
+
+.admin-column h2 {
+  font-size: var(--font-size-xl);
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+/* Responsive Admin Grid */
+@media (max-width: 1024px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-page .container {
+    max-width: 100%;
+  }
+
+  .admin-grid {
+    gap: 1.5rem;
+  }
+}

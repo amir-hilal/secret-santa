@@ -3,33 +3,44 @@
     "rooms": {
       "$roomId": {
         ".read": true,
-        ".write": "!data.exists()",
-        "participants": {
-          ".read": true,
-          ".write": false
+
+        ".write": "(!data.exists() && auth != null) || (data.exists() && (data.child('creatorId').val() === auth.uid || auth.token.email === 'amir.hilal@hilalpines.com'))",
+
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0"
         },
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "creatorId": {
+          ".validate": "newData.isString()"
+        },
+        "isSecured": {
+          ".validate": "newData.isBoolean()"
+        },
+        "pin": {
+          ".validate": "newData.isString() && newData.val().length === 4"
+        },
+        "status": {
+          ".validate": "newData.val() === 'open' || newData.val() === 'completed'"
+        },
+
+        "participants": {
+          ".write": "data.parent().child('creatorId').val() === auth.uid || auth.token.email === 'amir.hilal@hilalpines.com'"
+        },
+
         "assignments": {
-          ".read": true,
           "$participantId": {
-            ".write": true,
+            ".write": "!data.exists() || data.parent().parent().child('creatorId').val() === auth.uid || auth.token.email === 'amir.hilal@hilalpines.com'",
             ".validate": "newData.hasChildren(['participantId', 'targetId', 'assignedAt'])"
           }
         },
+
         "availableTargets": {
-          ".read": true,
           "$targetId": {
             ".write": true,
             ".validate": "newData.isBoolean()"
           }
-        },
-        "status": {
-          ".read": true,
-          ".write": true,
-          ".validate": "newData.val() === 'open' || newData.val() === 'completed'"
-        },
-        "createdAt": {
-          ".read": true,
-          ".write": "!data.exists()"
         }
       }
     }

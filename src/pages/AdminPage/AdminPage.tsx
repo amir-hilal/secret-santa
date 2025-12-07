@@ -1,9 +1,9 @@
-import { Alert, Button, Snackbar, Tooltip } from '@mui/material';
+import { Alert, Button, Snackbar } from '@mui/material';
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlassDialog from '../../components/GlassDialog/GlassDialog';
-import ParticipantTags from '../../components/ParticipantTags/ParticipantTags';
 import PasswordProtect from '../../components/PasswordProtect/PasswordProtect';
+import RoomsList from '../../components/RoomsList/RoomsList';
 import {
   createRoom,
   deleteRoom,
@@ -13,13 +13,13 @@ import {
   updateRoomParticipants,
 } from '../../firebase/roomsService';
 import { Room } from '../../types';
-import './HomePage.css';
+import './AdminPage.css';
 
 /**
- * HomePage - Admin page to create rooms and view all existing rooms
+ * AdminPage - Admin page to create rooms and view all existing rooms
  * Protected by password authentication
  */
-export default function HomePage() {
+export default function AdminPage() {
   const [roomName, setRoomName] = useState('');
   const [participantNames, setParticipantNames] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,6 +31,7 @@ export default function HomePage() {
     severity: 'success' | 'error';
   }>({ open: false, message: '', severity: 'success' });
   const [copiedRoomId, setCopiedRoomId] = useState<string | null>(null);
+  const [copiedPinRoomId, setCopiedPinRoomId] = useState<string | null>(null);
   const [deleteDialog, setDeleteDialog] = useState<{
     open: boolean;
     roomId: string;
@@ -104,6 +105,12 @@ export default function HomePage() {
     navigator.clipboard.writeText(url);
     setCopiedRoomId(roomId);
     setTimeout(() => setCopiedRoomId(null), 2000);
+  };
+
+  const handleCopyPin = (roomId: string, pin: string) => {
+    navigator.clipboard.writeText(pin);
+    setCopiedPinRoomId(roomId);
+    setTimeout(() => setCopiedPinRoomId(null), 2000);
   };
 
   const handleDeleteRoom = (roomId: string, roomName: string) => {
@@ -226,10 +233,6 @@ export default function HomePage() {
     }
   };
 
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString();
-  };
-
   return (
     <PasswordProtect>
       <div className="page home-page admin-page">
@@ -310,196 +313,17 @@ export default function HomePage() {
             <div className="admin-column">
               <div className="card">
                 <h2>Existing Rooms ({rooms.length})</h2>
-                <div className="rooms-list">
-                  {rooms.length === 0 ? (
-                    <p className="no-rooms">No rooms created yet.</p>
-                  ) : (
-                    rooms.map((room) => {
-                      const totalParticipants = Object.keys(room.participants).length;
-                      const assignedCount = room.assignments
-                        ? Object.keys(room.assignments).length
-                        : 0;
-
-                      return (
-                        <div
-                          key={room.id}
-                          className="room-item"
-                          onClick={() => navigate(`/room/${room.id}`)}
-                        >
-                          <div className="room-header">
-                            <div
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.75rem',
-                              }}
-                            >
-                              <span className="room-id">{room.name}</span>
-                              <Tooltip
-                                title="Copied!"
-                                open={copiedRoomId === room.id}
-                                disableFocusListener
-                                disableHoverListener
-                                disableTouchListener
-                                arrow
-                              >
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleCopyRoomLink(room.id);
-                                  }}
-                                  title="Copy link"
-                                  sx={{
-                                    borderRadius: '50%',
-                                    minWidth: 'auto',
-                                    width: '32px',
-                                    height: '32px',
-                                    padding: '0.4rem',
-                                    background: 'none',
-                                    color: 'var(--text-secondary)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    '&:hover': {
-                                      background: 'var(--overlay-light)',
-                                      color: 'var(--text-primary)',
-                                    },
-                                  }}
-                                >
-                                  <span
-                                    className="material-symbols-outlined"
-                                    style={{ fontSize: '20px' }}
-                                  >
-                                    link
-                                  </span>
-                                </Button>
-                              </Tooltip>
-                            </div>
-                            <div className="room-header-actions">
-                              <span
-                                className="material-symbols-outlined room-icon"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(`/room/${room.id}`);
-                                }}
-                                title="Open room"
-                              >
-                                open_in_new
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="room-details">
-                            <p className="room-date">{formatDate(room.createdAt)}</p>
-                            <p className="room-progress">
-                              Progress: {assignedCount} / {totalParticipants} assigned
-                            </p>
-                            <div className="room-participants">
-                              <strong>Participants:</strong>
-                              <ParticipantTags
-                                participants={room.participants}
-                                assignments={room.assignments}
-                              />
-                            </div>
-                          </div>
-
-                          <div className="room-actions">
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleResetRoom(room.id, room.name);
-                              }}
-                              title="Reset assignments"
-                              sx={{
-                                borderRadius: '50%',
-                                minWidth: 'auto',
-                                width: '40px',
-                                height: '40px',
-                                padding: '0.5rem',
-                                border: 'none',
-                                backgroundColor: 'var(--warning-color)',
-                                color: 'white',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                '&:hover': {
-                                  backgroundColor: 'var(--warning-hover)',
-                                },
-                              }}
-                            >
-                              <span
-                                className="material-symbols-outlined"
-                                style={{ fontSize: '24px' }}
-                              >
-                                restart_alt
-                              </span>
-                            </Button>
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditRoom(room);
-                              }}
-                              title="Edit room"
-                              sx={{
-                                borderRadius: '50%',
-                                minWidth: 'auto',
-                                width: '40px',
-                                height: '40px',
-                                padding: '0.5rem',
-                                border: 'none',
-                                backgroundColor: 'var(--primary-color)',
-                                color: 'white',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                '&:hover': {
-                                  backgroundColor: 'var(--primary-hover)',
-                                },
-                              }}
-                            >
-                              <span
-                                className="material-symbols-outlined"
-                                style={{ fontSize: '24px' }}
-                              >
-                                edit
-                              </span>
-                            </Button>
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteRoom(room.id, room.name);
-                              }}
-                              title="Delete room"
-                              sx={{
-                                borderRadius: '50%',
-                                minWidth: 'auto',
-                                width: '40px',
-                                height: '40px',
-                                padding: '0.5rem',
-                                border: 'none',
-                                backgroundColor: 'var(--error-color)',
-                                color: 'white',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                '&:hover': {
-                                  backgroundColor: 'var(--secondary-hover)',
-                                },
-                              }}
-                            >
-                              <span
-                                className="material-symbols-outlined"
-                                style={{ fontSize: '24px' }}
-                              >
-                                delete
-                              </span>
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
+                <RoomsList
+                  rooms={rooms}
+                  copiedRoomId={copiedRoomId}
+                  copiedPinRoomId={copiedPinRoomId}
+                  onCopyRoomLink={handleCopyRoomLink}
+                  onCopyPin={handleCopyPin}
+                  onDeleteRoom={handleDeleteRoom}
+                  onEditRoom={handleEditRoom}
+                  onResetRoom={handleResetRoom}
+                  showActions={true}
+                />
               </div>
             </div>
           </div>

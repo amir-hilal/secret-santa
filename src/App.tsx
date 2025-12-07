@@ -1,14 +1,67 @@
 import Lottie from 'lottie-react';
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
-import HomePage from './pages/HomePage/HomePage';
+import Header from './components/Header/Header';
+import { subscribeToAuthState } from './firebase/authService';
+import AdminPage from './pages/AdminPage/AdminPage';
+import LandingPage from './pages/LandingPage/LandingPage';
+import MyRoomsPage from './pages/MyRoomsPage/MyRoomsPage';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
+import RoomCreatedPage from './pages/RoomCreatedPage/RoomCreatedPage';
 import RoomPage from './pages/RoomPage/RoomPage';
+import RoomPinPage from './pages/RoomPinPage/RoomPinPage';
+import { useAppDispatch } from './store/hooks';
+import { clearUser, setUser, showLoginOverlay } from './store/userSlice';
 
 /**
  * Main App component with routing
  */
+function AppContent() {
+  const location = useLocation();
+  const dispatch = useAppDispatch();
+
+  // Subscribe to auth state changes globally
+  useEffect(() => {
+    const unsubscribe = subscribeToAuthState((user) => {
+      if (user) {
+        dispatch(
+          setUser({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+          })
+        );
+      } else {
+        dispatch(clearUser());
+      }
+    });
+    return () => unsubscribe();
+  }, [dispatch]);
+
+  const handleSignInClick = () => {
+    if (location.pathname === '/') {
+      dispatch(showLoginOverlay());
+    }
+  };
+
+  return (
+    <>
+      <Header onSignInClick={handleSignInClick} />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/my-rooms" element={<MyRoomsPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/room-created/:roomId" element={<RoomCreatedPage />} />
+        <Route path="/room/:roomId/pin" element={<RoomPinPage />} />
+        <Route path="/room/:roomId" element={<RoomPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </>
+  );
+}
+
 function App() {
   const [snowAnimation, setSnowAnimation] = useState<object | null>(null);
 
@@ -30,11 +83,7 @@ function App() {
         </div>
       )}
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/room/:roomId" element={<RoomPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <AppContent />
       </BrowserRouter>
     </>
   );
