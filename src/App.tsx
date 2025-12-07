@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header/Header';
+import { subscribeToAuthState } from './firebase/authService';
 import AdminPage from './pages/AdminPage/AdminPage';
 import LandingPage from './pages/LandingPage/LandingPage';
 import MyRoomsPage from './pages/MyRoomsPage/MyRoomsPage';
@@ -11,7 +12,7 @@ import RoomCreatedPage from './pages/RoomCreatedPage/RoomCreatedPage';
 import RoomPage from './pages/RoomPage/RoomPage';
 import RoomPinPage from './pages/RoomPinPage/RoomPinPage';
 import { useAppDispatch } from './store/hooks';
-import { showLoginOverlay } from './store/userSlice';
+import { clearUser, setUser, showLoginOverlay } from './store/userSlice';
 
 /**
  * Main App component with routing
@@ -19,6 +20,25 @@ import { showLoginOverlay } from './store/userSlice';
 function AppContent() {
   const location = useLocation();
   const dispatch = useAppDispatch();
+
+  // Subscribe to auth state changes globally
+  useEffect(() => {
+    const unsubscribe = subscribeToAuthState((user) => {
+      if (user) {
+        dispatch(
+          setUser({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+          })
+        );
+      } else {
+        dispatch(clearUser());
+      }
+    });
+    return () => unsubscribe();
+  }, [dispatch]);
 
   const handleSignInClick = () => {
     if (location.pathname === '/') {

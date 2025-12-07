@@ -6,6 +6,7 @@ interface UserState {
   displayName: string | null;
   photoURL: string | null;
   showLoginOverlay: boolean;
+  isAuthLoading: boolean;
 }
 
 interface SetUserPayload {
@@ -21,6 +22,7 @@ const initialState: UserState = {
   displayName: null,
   photoURL: null,
   showLoginOverlay: false,
+  isAuthLoading: true,
 };
 
 const userSlice = createSlice({
@@ -32,12 +34,14 @@ const userSlice = createSlice({
       state.email = action.payload.email;
       state.displayName = action.payload.displayName;
       state.photoURL = action.payload.photoURL;
+      state.isAuthLoading = false;
     },
     clearUser: (state) => {
       state.uid = null;
       state.email = null;
       state.displayName = null;
       state.photoURL = null;
+      state.isAuthLoading = false;
     },
     showLoginOverlay: (state) => {
       state.showLoginOverlay = true;

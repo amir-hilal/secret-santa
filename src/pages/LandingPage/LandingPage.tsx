@@ -1,13 +1,11 @@
 import { Button, FormControlLabel, Switch } from '@mui/material';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithGoogle, subscribeToAuthState } from '../../firebase/authService';
+import { signInWithGoogle } from '../../firebase/authService';
 import { createRoom } from '../../firebase/roomsService';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
-  clearUser,
   hideLoginOverlay,
-  setUser,
   showLoginOverlay as showLoginOverlayAction,
 } from '../../store/userSlice';
 import './LandingPage.css';
@@ -26,25 +24,6 @@ export default function LandingPage() {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.user);
   const showLoginOverlay = useAppSelector((state) => state.user.showLoginOverlay);
-
-  // Subscribe to auth state changes
-  useEffect(() => {
-    const unsubscribe = subscribeToAuthState((user) => {
-      if (user) {
-        dispatch(
-          setUser({
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-          })
-        );
-      } else {
-        dispatch(clearUser());
-      }
-    });
-    return () => unsubscribe();
-  }, [dispatch]);
 
   // Auto-create room after login if pending
   useEffect(() => {

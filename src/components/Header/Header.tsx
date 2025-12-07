@@ -48,7 +48,9 @@ export default function Header({ onSignInClick }: { onSignInClick?: () => void }
         <div className="header-logo" onClick={handleHome}>
           <img src="/santa-hat.png" alt="Secret Santa" />
         </div>
-        {currentUser.uid ? (
+        {currentUser.isAuthLoading ? (
+          <div style={{ width: '100px' }}></div>
+        ) : currentUser.uid ? (
           <div className="header-profile">
             <div className="my-rooms-link" onClick={handleMyRooms}>
               View My Rooms
