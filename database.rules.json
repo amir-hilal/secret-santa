@@ -4,7 +4,7 @@
       ".read": true,
 
       "$roomId": {
-        ".write": "(!data.exists() && auth != null) || (data.exists() && (data.child('creatorId').val() === auth.uid || auth.token.email === 'amir.hilal@hilalpines.com'))",
+        ".write": "!data.exists() ? auth != null : true",
 
         "name": {
           ".validate": "newData.isString() && newData.val().length > 0"

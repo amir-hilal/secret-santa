@@ -1,10 +1,12 @@
+import { Button } from '@mui/material';
 import Lottie from 'lottie-react';
 import { ReactElement, useEffect, useState } from 'react';
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
+import GoogleSignInButton from './components/GoogleSignInButton/GoogleSignInButton';
 import Header from './components/Header/Header';
 import LoadingAnimation from './components/LoadingAnimation/LoadingAnimation';
-import { subscribeToAuthState } from './firebase/authService';
+import { signInWithGoogle, subscribeToAuthState } from './firebase/authService';
 import ChristmasSleighAnimation from './lottie/ChristmasSleigh.json';
 import AdminPage from './pages/AdminPage/AdminPage';
 import LandingPage from './pages/LandingPage/LandingPage';
@@ -14,7 +16,12 @@ import RoomCreatedPage from './pages/RoomCreatedPage/RoomCreatedPage';
 import RoomPage from './pages/RoomPage/RoomPage';
 import RoomPinPage from './pages/RoomPinPage/RoomPinPage';
 import { useAppDispatch, useAppSelector } from './store/hooks';
-import { clearUser, setUser, showLoginOverlay } from './store/userSlice';
+import {
+  clearUser,
+  hideLoginOverlay,
+  setUser,
+  showLoginOverlay,
+} from './store/userSlice';
 
 /**
  * ProtectedRoute - Redirects to home if user is not authenticated
@@ -33,9 +40,9 @@ function ProtectedRoute({ children }: { children: ReactElement }) {
  * Main App component with routing
  */
 function AppContent() {
-  const location = useLocation();
   const dispatch = useAppDispatch();
   const isAuthLoading = useAppSelector((state) => state.user.isAuthLoading);
+  const showLogin = useAppSelector((state) => state.user.showLoginOverlay);
 
   // Subscribe to auth state changes globally
   useEffect(() => {
@@ -57,14 +64,52 @@ function AppContent() {
   }, [dispatch]);
 
   const handleSignInClick = () => {
-    if (location.pathname === '/') {
-      dispatch(showLoginOverlay());
+    dispatch(showLoginOverlay());
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithGoogle();
+      dispatch(hideLoginOverlay());
+    } catch (err) {
+      console.error('Error signing in:', err);
+      dispatch(hideLoginOverlay());
     }
   };
 
   return (
     <>
       <Header onSignInClick={handleSignInClick} />
+
+      {/* Global Login Overlay */}
+      {showLogin && (
+        <div className="login-overlay">
+          <div className="login-overlay-content">
+            <div className="login-card">
+              <h2>🎅 Sign In Required</h2>
+              <p>You need to sign in to access this feature</p>
+
+              <div className="login-buttons">
+                <GoogleSignInButton onClick={handleGoogleLogin} fullWidth />
+
+                <Button
+                  onClick={() => dispatch(hideLoginOverlay())}
+                  fullWidth
+                  sx={{
+                    textTransform: 'none',
+                    color: 'var(--text-secondary)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    },
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {isAuthLoading ? (
         <div
           className="page"
