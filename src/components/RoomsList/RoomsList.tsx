@@ -90,43 +90,34 @@ export default function RoomsList({
                       },
                     }}
                   >
-                    <span
-                      className="material-symbols-outlined"
-                    >
-                      link
-                    </span>
+                    <span className="material-symbols-outlined">link</span>
                   </Button>
                 </Tooltip>
-                {room.isSecured && <span className="secured-badge">🔒 Secured</span>}
+                {room.isSecured && room.pin && (
+                  <Tooltip
+                    title="Copied!"
+                    open={copiedPinRoomId === room.id}
+                    disableFocusListener
+                    disableHoverListener
+                    disableTouchListener
+                    arrow
+                  >
+                    <span
+                      className="secured-badge clickable"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onCopyPin(room.id, room.pin!);
+                      }}
+                    >
+                      🔒 {room.pin}
+                    </span>
+                  </Tooltip>
+                )}
               </div>
               <div className="room-header-actions">
-                <span
-                  className="material-symbols-outlined room-icon"
-                  title="Open room"
-                >
+                <span className="material-symbols-outlined room-icon" title="Open room">
                   open_in_new
                 </span>
-                {room.isSecured && room.pin && (
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onCopyPin(room.id, room.pin!);
-                    }}
-                    sx={{
-                      textTransform: 'none',
-                      borderColor: 'var(--warning-color)',
-                      color: 'var(--warning-color)',
-                      '&:hover': {
-                        borderColor: 'var(--warning-color)',
-                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
-                      },
-                    }}
-                  >
-                    {copiedPinRoomId === room.id ? '✓ Copied' : 'Copy PIN'}
-                  </Button>
-                )}
               </div>
             </div>
 
@@ -146,67 +137,100 @@ export default function RoomsList({
 
             {showActions && (
               <div className="room-actions">
-                {onEditRoom && (
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEditRoom(room);
-                    }}
-                    sx={{
-                      textTransform: 'none',
-                      borderColor: 'var(--primary-color)',
-                      color: 'var(--primary-color)',
-                      '&:hover': {
-                        borderColor: 'var(--primary-hover)',
-                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                      },
-                    }}
-                  >
-                    Edit
-                  </Button>
-                )}
                 {onResetRoom && (
                   <Button
-                    variant="outlined"
-                    size="small"
                     onClick={(e) => {
                       e.stopPropagation();
                       onResetRoom(room.id, room.name);
                     }}
+                    title="Reset assignments"
                     sx={{
-                      textTransform: 'none',
-                      borderColor: 'var(--warning-color)',
-                      color: 'var(--warning-color)',
+                      borderRadius: '50%',
+                      minWidth: 'auto',
+                      width: '40px',
+                      height: '40px',
+                      padding: '0.5rem',
+                      border: 'none',
+                      backgroundColor: 'var(--warning-color)',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       '&:hover': {
-                        borderColor: 'var(--warning-color)',
-                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                        backgroundColor: 'var(--warning-hover)',
                       },
                     }}
                   >
-                    Reset
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '24px' }}
+                    >
+                      restart_alt
+                    </span>
+                  </Button>
+                )}
+                {onEditRoom && (
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEditRoom(room);
+                    }}
+                    title="Edit room"
+                    sx={{
+                      borderRadius: '50%',
+                      minWidth: 'auto',
+                      width: '40px',
+                      height: '40px',
+                      padding: '0.5rem',
+                      border: 'none',
+                      backgroundColor: 'var(--primary-color)',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      '&:hover': {
+                        backgroundColor: 'var(--primary-hover)',
+                      },
+                    }}
+                  >
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '24px' }}
+                    >
+                      edit
+                    </span>
                   </Button>
                 )}
                 {onDeleteRoom && (
                   <Button
-                    variant="outlined"
-                    size="small"
                     onClick={(e) => {
                       e.stopPropagation();
                       onDeleteRoom(room.id, room.name);
                     }}
+                    title="Delete room"
                     sx={{
-                      textTransform: 'none',
-                      borderColor: 'var(--error-color)',
-                      color: 'var(--error-color)',
+                      borderRadius: '50%',
+                      minWidth: 'auto',
+                      width: '40px',
+                      height: '40px',
+                      padding: '0.5rem',
+                      border: 'none',
+                      backgroundColor: 'var(--error-color)',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       '&:hover': {
-                        borderColor: 'var(--secondary-hover)',
-                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        backgroundColor: 'var(--secondary-hover)',
                       },
                     }}
                   >
-                    Delete
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '24px' }}
+                    >
+                      delete
+                    </span>
                   </Button>
                 )}
               </div>

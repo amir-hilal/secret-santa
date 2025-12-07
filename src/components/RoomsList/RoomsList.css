@@ -63,6 +63,17 @@
   color: var(--warning-color);
 }
 
+.secured-badge.clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.secured-badge.clickable:hover {
+  background: rgba(255, 193, 7, 0.3);
+  border-color: rgba(255, 193, 7, 0.6);
+  transform: scale(1.05);
+}
+
 .room-header-actions {
   display: flex;
   gap: 0.5rem;
