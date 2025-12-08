@@ -1,8 +1,10 @@
-import { Alert, Button, Snackbar } from '@mui/material';
-import { FormEvent, useEffect, useState } from 'react';
+import { Alert, Snackbar } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlassDialog from '../../components/GlassDialog/GlassDialog';
+import InstructionsBox from '../../components/InstructionsBox/InstructionsBox';
 import PasswordProtect from '../../components/PasswordProtect/PasswordProtect';
+import RoomCreationForm from '../../components/RoomCreationForm/RoomCreationForm';
 import RoomsList from '../../components/RoomsList/RoomsList';
 import {
   createRoom,
@@ -12,6 +14,7 @@ import {
   updateRoomName,
   updateRoomParticipants,
 } from '../../firebase/roomsService';
+import { useAppSelector } from '../../store/hooks';
 import { Room } from '../../types';
 import './AdminPage.css';
 
@@ -20,11 +23,9 @@ import './AdminPage.css';
  * Protected by password authentication
  */
 export default function AdminPage() {
-  const [roomName, setRoomName] = useState('');
-  const [participantNames, setParticipantNames] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
+  const currentUser = useAppSelector((state) => state.user);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
@@ -59,44 +60,28 @@ export default function AdminPage() {
     return () => unsubscribe();
   }, []);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    // Validate room name
-    const trimmedRoomName = roomName.trim();
-    if (trimmedRoomName.length === 0) {
-      setError('Please enter a room name');
-      return;
-    }
-
-    // Parse and validate participant names
-    const names = participantNames
-      .split('\n')
-      .map((name) => name.trim())
-      .filter((name) => name.length > 0);
-
-    if (names.length < 2) {
-      setError('Please enter at least 2 participants (one per line)');
-      return;
-    }
-
-    // Check for duplicate names
-    const uniqueNames = new Set(names.map((n) => n.toLowerCase()));
-    if (uniqueNames.size !== names.length) {
-      setError('Duplicate names detected. Please ensure all names are unique.');
-      return;
-    }
-
+  const handleCreateRoom = async (data: {
+    roomName: string;
+    participantNames: string[];
+    isSecured: boolean;
+  }) => {
     setLoading(true);
 
     try {
-      const roomId = await createRoom(trimmedRoomName, names);
-      navigate(`/room/${roomId}`);
-    } catch (err) {
-      console.error('Error creating room:', err);
-      setError('Failed to create room. Please try again.');
+      const { roomId, pin } = await createRoom(
+        data.roomName,
+        data.participantNames,
+        currentUser.uid || undefined,
+        data.isSecured,
+        currentUser.displayName || 'Admin',
+        currentUser.email || 'amir.hilal@hilalpines.com'
+      );
+      navigate(`/room-created/${roomId}`, {
+        state: { roomName: data.roomName, pin, isSecured: data.isSecured },
+      });
+    } catch (err: any) {
       setLoading(false);
+      throw err; // Re-throw to let the form component handle the error
     }
   };
 
@@ -245,67 +230,8 @@ export default function AdminPage() {
             <div className="admin-column">
               <div className="card">
                 <h2>Create New Room</h2>
-                <form onSubmit={handleSubmit} className="create-room-form">
-                  <label htmlFor="roomName">Room Name:</label>
-                  <input
-                    type="text"
-                    id="roomName"
-                    value={roomName}
-                    onChange={(e) => setRoomName(e.target.value)}
-                    placeholder="e.g., Office Party 2025"
-                    disabled={loading}
-                    required
-                  />
-
-                  <label htmlFor="participants">
-                    Enter participant names (one per line):
-                  </label>
-                  <textarea
-                    id="participants"
-                    value={participantNames}
-                    onChange={(e) => setParticipantNames(e.target.value)}
-                    placeholder={'Alice\nBob\nCharlie\nDiana\nEvan'}
-                    rows={10}
-                    disabled={loading}
-                    required
-                  />
-
-                  {error && <div className="error-message">{error}</div>}
-
-                  <Button
-                    type="submit"
-                    disabled={loading}
-                    variant="contained"
-                    sx={{
-                      textTransform: 'none',
-                      fontWeight: 'var(--font-weight-semibold)',
-                      mt: 1,
-                      fontSize: 'var(--font-size-base)',
-                      padding: '0.75rem 1.5rem',
-                      borderRadius: '8px',
-                      backgroundColor: 'var(--primary-color)',
-                      color: 'white',
-                      '&:hover': {
-                        backgroundColor: 'var(--primary-hover)',
-                      },
-                      '&:disabled': {
-                        backgroundColor: 'var(--primary-color)',
-                        opacity: 0.6,
-                      },
-                    }}
-                  >
-                    {loading ? 'Creating room...' : 'Create room'}
-                  </Button>
-                </form>
-
-                <div className="info-box">
-                  <h3>Instructions:</h3>
-                  <ol>
-                    <li>Enter participant names (one per line)</li>
-                    <li>Click "Create room"</li>
-                    <li>Copy and share the room link</li>
-                  </ol>
-                </div>
+                <RoomCreationForm onSubmit={handleCreateRoom} isLoading={loading} />
+                <InstructionsBox />
               </div>
             </div>
 
