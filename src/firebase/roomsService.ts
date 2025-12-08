@@ -1,4 +1,5 @@
 import { get, onValue, push, ref, runTransaction, set } from 'firebase/database';
+import { sendRoomCreatedNotification } from '../services/emailService';
 import { Assignment, Participant, Room } from '../types';
 import { db } from './firebase';
 
@@ -31,13 +32,17 @@ export async function countUserRooms(userId: string): Promise<number> {
  * @param participantNames - Array of participant names
  * @param creatorId - User ID of the room creator (optional)
  * @param isSecured - Whether the room requires a PIN
+ * @param creatorName - Display name of the room creator (optional)
+ * @param creatorEmail - Email of the room creator (optional)
  * @returns The newly created room data including ID and PIN if secured
  */
 export async function createRoom(
   roomName: string,
   participantNames: string[],
   creatorId?: string,
-  isSecured: boolean = false
+  isSecured: boolean = false,
+  creatorName?: string,
+  creatorEmail?: string
 ): Promise<{ roomId: string; pin?: string }> {
   // Check room limit if user is authenticated
   if (creatorId) {
@@ -82,6 +87,19 @@ export async function createRoom(
 
   // Save to database
   await set(newRoomRef, room);
+
+  // Send email notification (non-blocking)
+  sendRoomCreatedNotification({
+    roomId,
+    roomName: roomName.trim(),
+    participantCount: participantNames.length,
+    participantNames,
+    isSecured,
+    creatorName,
+    creatorEmail,
+  }).catch((error) => {
+    console.error('Email notification failed:', error);
+  });
 
   return { roomId, pin };
 }
