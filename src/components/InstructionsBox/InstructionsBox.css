@@ -1,0 +1,30 @@
+.info-box {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--overlay-light);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.info-box h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.info-box ol {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.info-box li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.info-box li:last-child {
+  margin-bottom: 0;
+}

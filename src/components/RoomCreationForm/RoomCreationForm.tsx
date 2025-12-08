@@ -14,7 +14,10 @@ interface RoomCreationFormProps {
 /**
  * RoomCreationForm - Reusable form component for creating Secret Santa rooms
  */
-export default function RoomCreationForm({ onSubmit, isLoading = false }: RoomCreationFormProps) {
+export default function RoomCreationForm({
+  onSubmit,
+  isLoading = false,
+}: RoomCreationFormProps) {
   const [roomName, setRoomName] = useState('');
   const [participantNames, setParticipantNames] = useState('');
   const [isSecured, setIsSecured] = useState(false);
@@ -84,9 +87,7 @@ export default function RoomCreationForm({ onSubmit, isLoading = false }: RoomCr
         required
       />
 
-      <label htmlFor="participants">
-        Enter participant names (one per line):
-      </label>
+      <label htmlFor="participants">Enter participant names (one per line):</label>
       <textarea
         id="participants"
         value={participantNames}

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import InstructionsBox from '../../components/InstructionsBox/InstructionsBox';
 import RoomCreationForm from '../../components/RoomCreationForm/RoomCreationForm';
 import { createRoom } from '../../firebase/roomsService';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -73,17 +74,7 @@ export default function LandingPage() {
         <div className="card landing-card">
           <h2>Create Your Room</h2>
           <RoomCreationForm onSubmit={handleCreateRoom} isLoading={isCreating} />
-        </div>
-
-        <div className="info-section">
-          <h3>How it works:</h3>
-          <ol>
-            <li>Enter your event name and participant names</li>
-            <li>Choose if you want a secured room (optional)</li>
-            <li>Click "Generate Room" to create your Secret Santa event</li>
-            <li>Share the room link with participants</li>
-            <li>Each participant picks their Secret Santa anonymously</li>
-          </ol>
+          <InstructionsBox />
         </div>
       </div>
     </div>

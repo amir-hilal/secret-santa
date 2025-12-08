@@ -1,11 +1,11 @@
-import { Alert, Button, Snackbar } from '@mui/material';
+import { Alert, Snackbar } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlassDialog from '../../components/GlassDialog/GlassDialog';
+import InstructionsBox from '../../components/InstructionsBox/InstructionsBox';
 import PasswordProtect from '../../components/PasswordProtect/PasswordProtect';
 import RoomCreationForm from '../../components/RoomCreationForm/RoomCreationForm';
 import RoomsList from '../../components/RoomsList/RoomsList';
-import { useAppSelector } from '../../store/hooks';
 import {
   createRoom,
   deleteRoom,
@@ -14,6 +14,7 @@ import {
   updateRoomName,
   updateRoomParticipants,
 } from '../../firebase/roomsService';
+import { useAppSelector } from '../../store/hooks';
 import { Room } from '../../types';
 import './AdminPage.css';
 
@@ -230,15 +231,7 @@ export default function AdminPage() {
               <div className="card">
                 <h2>Create New Room</h2>
                 <RoomCreationForm onSubmit={handleCreateRoom} isLoading={loading} />
-
-                <div className="info-box">
-                  <h3>Instructions:</h3>
-                  <ol>
-                    <li>Enter participant names (one per line)</li>
-                    <li>Click "Create room"</li>
-                    <li>Copy and share the room link</li>
-                  </ol>
-                </div>
+                <InstructionsBox />
               </div>
             </div>
 
